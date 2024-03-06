@@ -1,0 +1,31 @@
+drop sequence userSD_seq;
+create sequence userSD_seq
+increment by 1
+start with 1
+minvalue 1
+;
+
+drop TABLE userSD CASCADE CONSTRAINTS;
+create table userSD(
+ no number primary key,
+ id varchar2(30) not null,
+ pw varchar2(20) not null,
+ name varchar2(18) not null
+);
+
+drop TABLE freindSD CASCADE CONSTRAINTS;
+create table freindSD(
+ user_no number not NULL REFERENCES userSD(no) on delete cascade,
+ freind_no number not null REFERENCES userSD(no) on delete cascade,
+ freind_check varchar2(2) DEFAULT 'N' check(freind_check in('Y','N'))
+);
+
+insert into userSD VALUES (userSD_seq.nextval,'geon21h','qwer1234~','거니');
+insert into userSD VALUES (userSD_seq.nextval,'qwe123','1234qwer~','홍길동');
+insert into userSD VALUES (userSD_seq.nextval,'kim12','asdf12~','김사람');
+
+SELECT * FROM USERSD;
+
+insert into freindSD(user_no,FREIND_NO) VALUES ('1','2');
+
+SELECT * FROM freindSD;

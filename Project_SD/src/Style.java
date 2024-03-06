@@ -4,6 +4,7 @@ import java.awt.Font;
 public class Style {
 
     Color mainColor = new Color(156, 93, 71);
+    Color mainColor_shades = new Color(117, 70, 53);
     Color lightGray = new Color(211, 211, 211);
     Color inputWhite = new Color(247, 247, 247);
     Color inputBlack = new Color(55, 55, 55);
