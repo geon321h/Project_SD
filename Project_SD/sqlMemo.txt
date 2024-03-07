@@ -8,9 +8,10 @@ minvalue 1
 drop TABLE userSD CASCADE CONSTRAINTS;
 create table userSD(
  no number primary key,
- id varchar2(30) not null,
+ id varchar2(30) not null UNIQUE,
  pw varchar2(20) not null,
- name varchar2(18) not null
+ name varchar2(18) not null,
+ birth Date not null
 );
 
 drop TABLE freindSD CASCADE CONSTRAINTS;
@@ -20,9 +21,10 @@ create table freindSD(
  freind_check varchar2(2) DEFAULT 'N' check(freind_check in('Y','N'))
 );
 
-insert into userSD VALUES (userSD_seq.nextval,'geon21h','qwer1234~','거니');
-insert into userSD VALUES (userSD_seq.nextval,'qwe123','1234qwer~','홍길동');
-insert into userSD VALUES (userSD_seq.nextval,'kim12','asdf12~','김사람');
+insert into userSD VALUES (userSD_seq.nextval,'geon21h','qwer1234~','거니',sysdate);
+insert into userSD VALUES (userSD_seq.nextval,'qwe123','1234qwer~','홍길동',sysdate);
+insert into userSD VALUES (userSD_seq.nextval,'kim12','asdf12~','김사람',sysdate);
+ 
 
 SELECT * FROM USERSD;
 

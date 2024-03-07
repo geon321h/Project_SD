@@ -1,8 +1,9 @@
+
 import javax.swing.JFrame;
 
 public class MainFrame extends JFrame {
 
-	public MainFrame(String title) {
+	public MainFrame(String title, int no) {
 
 		super(title);
 		
@@ -26,8 +27,8 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
-		LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
+		Sign_UpFrame rf = new Sign_UpFrame("test"); // 프로그램 실행시 로그인 화면 출력
+		//LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
 		
 	}
 

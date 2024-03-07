@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 import javax.management.loading.PrivateClassLoader;
 import javax.swing.BorderFactory;
@@ -21,21 +22,27 @@ import javax.swing.border.LineBorder;
 
 public class LoginFrame extends JFrame {
 	
+	// main container //
+	private JPanel LoginForm; 
+	// logo // 
     private JLabel logo;
-    private JTextField tfId;
+    // IdInput //
+    private JPanel tfEmailForm;
+    private JTextField tfEmail;
+    // PwInput //
+    private JPanel tfPwForm;
     private JTextField tfPwDefault;
     private JPasswordField tfPw;
+    // Message  //
     private JLabel loginMessage;
+    // Button //
     private JButton btnLogin;
     private JButton btnSign_Up;
-    private JPanel LoginForm;
-    private JPanel tfIdForm;
-    private JPanel tfPwForm;
-    
     private boolean loginErr = false;
     private boolean sign_UPErr = false;
-    
+    // 객체 //
     Style st = new Style();
+    UserSD_DAO userDao = new UserSD_DAO();
     
 	public LoginFrame(String title) {
 
@@ -54,8 +61,8 @@ public class LoginFrame extends JFrame {
 
 	private void setEvent() {
 
-		tfId.addKeyListener(new keyHandler());
-		tfId.addFocusListener(new focusHandler());
+		tfEmail.addKeyListener(new keyHandler());
+		tfEmail.addFocusListener(new focusHandler());
 
 		tfPw.addFocusListener(new focusHandler());
 		tfPw.addKeyListener(new keyHandler());
@@ -86,24 +93,25 @@ public class LoginFrame extends JFrame {
 		// 로고 //
 		logo = new JLabel("Shared Diary");
 		logo.setBounds(85, 0,150,50);
-		logo.setFont(st.godo_B.deriveFont((float)20));
+		logo.setFont(st.neo_R.deriveFont((float)20));
 		logo.setForeground(st.mainColor);
 		LoginForm.add(logo);
 		
 		// 아이디 입력 //
-		tfIdForm = new JPanel();
-		tfIdForm.setBounds(0, 100,300,45);
-		tfIdForm.setBorder(new LineBorder(st.lightGray,1,true));
-		tfIdForm.setLayout(null);
-		LoginForm.add(tfIdForm);
+		tfEmailForm = new JPanel();
+		tfEmailForm.setBounds(0, 100,300,45);
+		tfEmailForm.setBorder(new LineBorder(st.lightGray,1,true));
+		tfEmailForm.setLayout(null);
+		LoginForm.add(tfEmailForm);
 		
-		tfId = new JTextField("아이디");
-		tfId.setBounds(1, 1,298,43);
-		tfId.setBackground(st.inputWhite);
-		tfId.setBorder(BorderFactory.createEmptyBorder(5, 9, 4, 9));
-		tfId.setForeground(st.inputBlack);
-		tfId.setFont(st.noto_P);
-		tfIdForm.add(tfId);
+		tfEmail = new JTextField("이메일");
+		tfEmail.setBounds(1, 1,298,43);
+		tfEmail.setBackground(st.inputWhite);
+		tfEmail.setBorder(BorderFactory.createEmptyBorder(5, 9, 4, 9));
+		tfEmail.setForeground(st.inputGray);
+		tfEmail.setFont(st.neo_R);
+		tfEmailForm.add(tfEmail);
+
 		
 		//tfId.setMargin(new Insets(0, 0, 0, 0));
 		
@@ -114,13 +122,12 @@ public class LoginFrame extends JFrame {
 		tfPwForm.setLayout(null);
 		LoginForm.add(tfPwForm);
 		
-		
 		tfPwDefault = new JTextField("비밀번호");
 		tfPwDefault.setBounds(1, 1,298,43);
 		tfPwDefault.setBackground(st.inputWhite);
 		tfPwDefault.setBorder(BorderFactory.createEmptyBorder(5, 9, 4, 9));
-		tfPwDefault.setForeground(st.inputBlack);
-		tfPwDefault.setFont(st.noto_P);
+		tfPwDefault.setForeground(st.inputGray);
+		tfPwDefault.setFont(st.neo_R);
 		tfPwForm.add(tfPwDefault);
 		
 		tfPw = new JPasswordField("");
@@ -128,13 +135,14 @@ public class LoginFrame extends JFrame {
 		tfPw.setBackground(st.inputWhite);
 		tfPw.setBorder(BorderFactory.createEmptyBorder(5, 9, 4, 9));
 		tfPw.setForeground(st.inputBlack);
+		tfPw.setVisible(false);
 		tfPwForm.add(tfPw);
 		
 		// 로그인 경고 //
 		loginMessage = new JLabel();
 		loginMessage.setBounds(0, 215,300,20);
 		loginMessage.setForeground(Color.red);
-		loginMessage.setFont(st.noto_P.deriveFont((float)12));
+		loginMessage.setFont(st.neo_R.deriveFont((float)12));
 		LoginForm.add(loginMessage);
 		
 		// 로그인 버튼 //
@@ -143,7 +151,7 @@ public class LoginFrame extends JFrame {
 		btnLogin.setBackground(st.mainColor);
 		btnLogin.setBorder(new LineBorder(st.mainColor,1,true));
 		btnLogin.setForeground(Color.white);
-		btnLogin.setFont(st.godo_M);
+		btnLogin.setFont(st.neo_B);
 		LoginForm.add(btnLogin);
 		
 		// 회원가입 버튼 //
@@ -152,7 +160,7 @@ public class LoginFrame extends JFrame {
 		btnSign_Up.setBackground(Color.white);
 		btnSign_Up.setBorder(new LineBorder(st.mainColor,1,true));
 		btnSign_Up.setForeground(st.mainColor);
-		btnSign_Up.setFont(st.godo_M);
+		btnSign_Up.setFont(st.neo_B);
 		LoginForm.add(btnSign_Up);
 		
 	}
@@ -165,11 +173,12 @@ public class LoginFrame extends JFrame {
 			Object obj = e.getSource();
 			
 			// Input 박스 //
-			if(obj == tfId) {
-				tfId.requestFocus();
-				if(tfId.getText().equals("아이디")) {
-					tfId.setText("");
-					tfIdForm.setBorder(new LineBorder(st.mainColor,1,true));
+			if(obj == tfEmail) {
+				tfEmail.requestFocus();
+				if(tfEmail.getText().equals("이메일")) {
+					tfEmail.setForeground(st.inputBlack);
+					tfEmail.setText("");
+					tfEmailForm.setBorder(new LineBorder(st.mainColor,1,true));
 					loginMessageClear();
 					loginErr = false;
 				}
@@ -187,16 +196,18 @@ public class LoginFrame extends JFrame {
 			Object obj = e.getSource();
 			
 			// Input 박스 //
-			if(obj == tfId) {
-				if(tfId.getText().equals("")){
-					tfId.setText("아이디");
-					tfId.select(0, 0);
+			if(obj == tfEmail) {
+				if(tfEmail.getText().equals("")){
+					tfEmail.setForeground(st.inputGray);
+					tfEmail.setText("이메일");
+					tfEmail.select(0, 0);
 				}
 			}
 			
 
 		}
 		
+		// 로그인 메세지 클리어 //
 		private void loginMessageClear() {
 			loginMessage.setText("");
 		}
@@ -212,17 +223,18 @@ public class LoginFrame extends JFrame {
 			Object obj = e.getSource();
 					
 			// Input 박스 //
-			if(obj == tfId) {
-				if(tfId.getText().equals("아이디")){
-					tfId.select(0, 0);
+			if(obj == tfEmail) {
+				if(tfEmail.getText().equals("이메일")){
+					tfEmail.select(0, 0);
 				}
 				if(loginErr == false) {
-					tfIdForm.setBorder(new LineBorder(st.mainColor,1,true));
+					tfEmailForm.setBorder(new LineBorder(st.mainColor,1,true));
 				}
 			}else if(obj == tfPw && sign_UPErr == false) {
 				tfPwForm.setBorder(new LineBorder(st.mainColor,1,true));
 			}
 			if(obj == tfPwDefault) {
+				tfPw.setVisible(true);
 				tfPw.requestFocus();
 				tfPwDefault.setVisible(false);
 			}
@@ -234,8 +246,8 @@ public class LoginFrame extends JFrame {
 			Object obj = e.getSource();
 			
 			// Input 박스 //
-			if(obj == tfId && loginErr == false) {
-				tfIdForm.setBorder(new LineBorder(st.lightGray,1,true));
+			if(obj == tfEmail && loginErr == false) {
+				tfEmailForm.setBorder(new LineBorder(st.lightGray,1,true));
 			}else if(obj == tfPw && sign_UPErr == false) {
 				tfPwForm.setBorder(new LineBorder(st.lightGray,1,true));
 			}
@@ -290,9 +302,14 @@ public class LoginFrame extends JFrame {
 			// Login 버튼 //
 			if(obj == btnLogin) {
 				
-				checkLogin();
-				setVisible(false);
-				MainFrame suf = new MainFrame("Shared Diary"); 
+				int no = checkLogin();
+				if(no != -1) {
+					
+					System.out.println("로그인 성공");
+					setVisible(false);
+					MainFrame suf = new MainFrame("Shared Diary",no); 
+					
+				}
 				
 			}
 			
@@ -307,18 +324,18 @@ public class LoginFrame extends JFrame {
 		}
 
 	}
-	
 	// 아이디와 비밀번호 입력 체크 //
-	private void checkLogin() {
+	private int checkLogin() {
 		
+		String emailValue = tfEmail.getText();
 		String pwValue = new String(tfPw.getPassword());
-		if(tfId.getText().equals("아이디")) {
-			loginMessage.setText("아이디 입력해주세요.");
-			tfIdForm.setBorder(new LineBorder(Color.red,1,true));
+		if(tfEmail.getText().equals("이메일")) {
+			loginMessage.setText("이메일을 입력해주세요.");
+			tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
 			loginErr = true;
 		}
 		if(loginErr && pwValue.equals("")) {
-			loginMessage.setText("아이디와 비밀번호를 입력해주세요.");
+			loginMessage.setText("이메일과 비밀번호를 입력해주세요.");
 			tfPwForm.setBorder(new LineBorder(Color.red,1,true));
 			sign_UPErr = true;
 			
@@ -330,10 +347,26 @@ public class LoginFrame extends JFrame {
 		
 		if(!loginErr && !sign_UPErr) {
 			
+			int no = userDao.checkUser(emailValue,pwValue);
 			
+			if(no == -1) {
+				
+				loginMessage.setText("이메일 또는 비밀번호가 잘못되었습니다.");
+				tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
+				tfPwForm.setBorder(new LineBorder(Color.red,1,true));
+				tfEmail.setText("이메일");
+				tfPw.setText("");
+				loginErr = true;
+				sign_UPErr = true;
+				
+			}else {
+				
+				return no;
+				
+			}
 			
 		}
-		
+		return -1;
 		
 	}
 	

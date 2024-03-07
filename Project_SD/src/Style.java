@@ -7,12 +7,17 @@ public class Style {
     Color mainColor_shades = new Color(117, 70, 53);
     Color lightGray = new Color(211, 211, 211);
     Color inputWhite = new Color(247, 247, 247);
+    Color inputGray = new Color(128, 128, 128);
     Color inputBlack = new Color(55, 55, 55);
     
-    Font godo_M = new Font("고도 M", Font.PLAIN, 14);
-    Font godo_B = new Font("고도 B", Font.PLAIN, 14);
 
-    Font noto_P = new Font("Noto Sans KR", Font.PLAIN, 14);
-    Font noto_B = new Font("Noto Sans KR", Font.BOLD, 14);
+    Font neo_H = new Font("나눔스퀘어 네오 Heavy", Font.PLAIN, 16);
+    Font neo_EB = new Font("나눔스퀘어 네오 ExtraBold", Font.PLAIN, 16);
+    Font neo_B = new Font("나눔스퀘어 네오 Bold", Font.PLAIN, 14);
+    Font neo_R = new Font("나눔스퀘어 네오 Regular", Font.PLAIN, 14);
+    Font neo_L = new Font("나눔스퀘어 네오 light", Font.PLAIN, 14);
+
+    // Font noto_M = new Font("Noto Sans KR Medium", Font.PLAIN, 14);
+    // Font noto_B = new Font("Noto Sans KR Bold", Font.PLAIN, 14);
     
 }
