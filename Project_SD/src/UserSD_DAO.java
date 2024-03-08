@@ -56,10 +56,8 @@ public class UserSD_DAO {
 			ps.setString(1, emailValue);
 			ps.setString(2, pwValue);
 			rs = ps.executeQuery();
-			System.out.println(no);
 			if(rs.next()) { 
 				no = rs.getInt("no");
-				System.out.println(no);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,6 +80,81 @@ public class UserSD_DAO {
 		}
 		return no;
 		
+	}
+
+	public int insertUser(String emailValue, String pwValue, String nameValue, String birthValue) {
+		connect();
+		String sql = "insert into userSD values(userSD_seq.nextval,?,?,?,?)";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, emailValue);
+			ps.setString(2, pwValue);
+			ps.setString(3, nameValue);
+			ps.setString(4, birthValue);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+		
+	}
+
+	public UserSD_DTO getUserById(int no) {
+		connect();
+		String sql = "select * from userSD where no=?";
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				no = rs.getInt("no");
+				String email = rs.getString("name");
+				String name = rs.getString("name");
+				String birth = String.valueOf(rs.getDate("birth"));
+
+				Dto = new UserSD_DTO();
+				Dto.setNo(no);
+				Dto.setEmail(email);
+				Dto.setName(name);
+				Dto.setBirth(birth);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return Dto;
 	}
 	
 	

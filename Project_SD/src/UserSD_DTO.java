@@ -6,6 +6,10 @@ public class UserSD_DTO {
 	private String pw;
 	private String name;
 	private String birth;
+
+	public UserSD_DTO() {
+	
+	}
 	
 	public UserSD_DTO(int no, String email, String pw, String name, String birth) {
 		super();
@@ -24,11 +28,11 @@ public class UserSD_DTO {
 		this.no = no;
 	}
 
-	public String getId() {
+	public String getEmail() {
 		return email;
 	}
 
-	public void setId(String id) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
