@@ -1,17 +1,22 @@
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -28,13 +33,11 @@ public class Sign_UpFrame extends JFrame{
 	private JPanel tfNameForm;
 	private JTextField tfName;
 	private JLabel nameMessage;
-	private boolean nameErr;
 	// email //
 	private JLabel email;
 	private JPanel tfEmailForm;
 	private JTextField tfEmail;
 	private JLabel emailMessage;
-	private boolean emailErr;
 	// pw //
 	private JLabel pw;
 	private JPanel tfPwForm;
@@ -45,7 +48,6 @@ public class Sign_UpFrame extends JFrame{
 	private JTextField tfPwCkDefault;
 	private JPasswordField tfPwCk;
 	private JLabel pwMessage;
-	private boolean pwErr;
 	// birth //
 	private JLabel birth;
 	private JPanel yearForm;
@@ -60,10 +62,10 @@ public class Sign_UpFrame extends JFrame{
 	// button  //
 	private JButton btnSign_Up;
 	private JLabel btnInfo;
-	private JLabel rogin;
+	private JButton login;
 	HashMap<Object, Boolean> tfErr = new HashMap<>();
 	
-	// 객체 //
+	// 참조 클래스 //
     Style st = new Style();
     UserSD_DAO userDao = new UserSD_DAO();
     
@@ -78,6 +80,9 @@ public class Sign_UpFrame extends JFrame{
 		tfErr.put(tfPw, false);
 		tfErr.put(tfPwCk, false);
 		tfErr.put(tfName, false);
+		tfErr.put(tfYear, false);
+		tfErr.put(tfMonth, false);
+		tfErr.put(tfDay, false);
 		
 		setSize(400,700);
 		setVisible(true);
@@ -104,14 +109,17 @@ public class Sign_UpFrame extends JFrame{
 		tfName.addKeyListener(new keyHandler());
 		
 		tfYear.addFocusListener(new focusHandler());
+		tfYear.addKeyListener(new keyHandler());
 		tfMonth.addFocusListener(new focusHandler());
+		tfMonth.addKeyListener(new keyHandler());
 		tfDay.addFocusListener(new focusHandler());
+		tfDay.addKeyListener(new keyHandler());
 		
-		//btnSign_Up.addActionListener(new ActionHandler());
+		btnSign_Up.addActionListener(new ActionHandler());
 		btnSign_Up.addMouseListener(new MouseHandler());
 
-		//rogin.addActionListener(new ActionHandler());
-		rogin.addMouseListener(new MouseHandler());
+		login.addActionListener(new ActionHandler());
+		login.addMouseListener(new MouseHandler());
 		
 	}
 
@@ -122,7 +130,7 @@ public class Sign_UpFrame extends JFrame{
 		display.setLayout(null);
 		this.add(display);
 		
-		// 회원가입 div //
+		// 회원가입 area //
 		Sign_UpForm = new JPanel();
 		Sign_UpForm.setBackground(Color.white);
 		Sign_UpForm.setSize(300,600);
@@ -242,7 +250,7 @@ public class Sign_UpFrame extends JFrame{
 		tfName.setFont(st.neo_R);
 		tfNameForm.add(tfName);
 		
-		nameMessage = new JLabel("한글로만 입력해주세요");
+		nameMessage = new JLabel("");
 		nameMessage.setBounds(0, 405,200,20);
 		nameMessage.setFont(st.neo_R.deriveFont((float)12));
 		nameMessage.setForeground(Color.red);
@@ -325,6 +333,7 @@ public class Sign_UpFrame extends JFrame{
 		btnSign_Up.setBorder(new LineBorder(st.mainColor,1,true));
 		btnSign_Up.setForeground(Color.white);
 		btnSign_Up.setFont(st.neo_B);
+		btnSign_Up.setFocusPainted(false);
 		Sign_UpForm.add(btnSign_Up);
 		
 		btnInfo = new JLabel("이미 회원이신가요?");
@@ -333,11 +342,15 @@ public class Sign_UpFrame extends JFrame{
 		btnInfo.setForeground(st.inputBlack);
 		Sign_UpForm.add(btnInfo);
 
-		rogin = new JLabel("로그인");
-		rogin.setBounds(175, 575,40,20);
-		rogin.setFont(st.neo_B.deriveFont((float)13));
-		rogin.setForeground(st.inputBlack);
-		Sign_UpForm.add(rogin);
+		login = new JButton("로그인");
+		login.setBounds(175, 575,40,20);
+		login.setBackground(Color.white);
+		login.setBorder(new LineBorder(Color.white,1,true));
+		login.setFont(st.neo_B.deriveFont((float)13));
+		login.setForeground(st.inputBlack);
+		login.setContentAreaFilled(false);
+		login.setFocusPainted(false);
+		Sign_UpForm.add(login);
 		
 	}
 	
@@ -350,15 +363,27 @@ public class Sign_UpFrame extends JFrame{
 			String pwCkValue = new String(tfPwCk.getPassword());
 			Object obj = e.getSource();
 			if(obj == tfPw) {
-				if(pwValue.length()>=19) {
+				if(pwValue.length()>=20) {
 					e.consume();
 				}
 			}else if(obj == tfPwCk) {
-				if(pwCkValue.length()>=19) {
+				if(pwCkValue.length()>=20) {
 					e.consume();
 				}
 			}else if(obj == tfName) {
-				if(tfName.getText().length()>=5) {
+				if(tfName.getText().length()>=6) {
+					e.consume();
+				}
+			}else if(obj == tfYear) {
+				if(tfYear.getText().length()>=4) {
+					e.consume();
+				}
+			}else if(obj == tfMonth) {
+				if(tfMonth.getText().length()>=2) {
+					e.consume();
+				}
+			}else if(obj == tfDay) {
+				if(tfDay.getText().length()>=2) {
 					e.consume();
 				}
 			}
@@ -371,23 +396,21 @@ public class Sign_UpFrame extends JFrame{
 			
 			String pwValue = new String(tfPw.getPassword());
 			String pwCkValue = new String(tfPwCk.getPassword());
+			String name = tfName.getText();
 			// Input 박스 //
 			if(obj == tfEmail) {
-				if(!tfEmail.getText().contains("@") || !tfEmail.getText().contains(".")){
+				String email = tfEmail.getText();
+				if(!email.contains("@") || !email.contains(".") || !(email.substring(email.indexOf("@"),email.indexOf(".")).length()>2)|| !(email.substring(email.indexOf(".")).length()>2)){
 					tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
 					tfErr.replace(obj, true);
-					emailMessage.setText("이메일 형식으로 입력해주세요");
+					emailMessage.setText("이메일 형식으로 입력해주세요.");
 				}
-			}else if(obj == tfPw) {
-				
 			}else if(obj == tfPwCk) {
 				if(!pwValue.equals(pwCkValue)) {
 					tfPwCkForm.setBorder(new LineBorder(Color.red,1,true));
 					tfErr.replace(obj, true);
-					pwMessage.setText("비밀번호가 일치하지 않습니다");
+					pwMessage.setText("비밀번호가 일치하지 않습니다.");
 				}
-			}else if(obj == tfName) {
-				tfPwForm.setBorder(new LineBorder(st.mainColor,1,true));
 			}
 			
 		}
@@ -398,13 +421,21 @@ public class Sign_UpFrame extends JFrame{
 			Object obj = e.getSource();
 			String pwValue = new String(tfPw.getPassword());
 			String pwCkValue = new String(tfPwCk.getPassword());
+			String name = tfName.getText();
 			// Input 박스 //
 			if(obj == tfEmail) {
-				if(tfEmail.getText().contains("@") & tfEmail.getText().contains(".")){
-					tfEmailForm.setBorder(new LineBorder(st.mainColor,1,true));
-					tfErr.replace(obj, false);
-					emailMessage.setText("");
+				String email = tfEmail.getText();
+				if(email.contains("@") & email.contains(".")){
+					if(email.substring(email.indexOf("@"),email.indexOf(".")).length()>2 & email.substring(email.indexOf(".")).length()>2) {
+						tfEmailForm.setBorder(new LineBorder(st.mainColor,1,true));
+						tfErr.replace(obj, false);
+						emailMessage.setText("");
+					}
 				}
+			}else if(obj == tfPw) {
+				tfPwForm.setBorder(new LineBorder(st.mainColor,1,true));
+				tfErr.replace(obj, false);
+				pwMessage.setText("");
 			}else if(obj == tfPwCk) {
 				if(pwValue.equals(pwCkValue)) {
 					tfPwCkForm.setBorder(new LineBorder(st.mainColor,1,true));
@@ -413,9 +444,50 @@ public class Sign_UpFrame extends JFrame{
 				}else {
 					tfPwCkForm.setBorder(new LineBorder(Color.red,1,true));
 					tfErr.replace(obj, true);
-					pwMessage.setText("비밀번호가 일치하지 않습니다");
+					pwMessage.setText("비밀번호가 일치하지 않습니다.");
+				}
+			}else if(obj == tfName) {
+				String korCk1 = "^[가-힣]*$";
+				if(name.matches(korCk1)) { 
+					tfNameForm.setBorder(new LineBorder(st.mainColor,1,true));
+					tfErr.replace(obj, false);
+					nameMessage.setText("");
+				}
+				String korCk2 = "^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*$";
+				if(!(name.matches(korCk2))) { 
+					tfNameForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(obj, true);
+					nameMessage.setText("한글로만 입력해주세요.");
+				}
+			}else if(obj == tfYear || obj == tfMonth || obj == tfDay ) {
+				String date = null;
+				if(obj == tfYear) {
+					date = tfYear.getText();
+					tfErr.replace(tfYear, false);
+					yearForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}else if(obj == tfMonth){
+					date = tfMonth.getText();
+					tfErr.replace(tfMonth, false);
+					monthForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}else {
+					date = tfDay.getText();
+					tfErr.replace(tfDay, false);
+					dayForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}
+				for(int i=0;i<date.length();i++	) {
+					if (!(date.charAt(i) >= 0x30 && date.charAt(i) <= 0x39)) {
+						String num = date.substring(0, (date.length() - 1));
+						if(obj == tfYear) {
+							tfYear.setText(num);
+						}else if(obj == tfMonth){
+							tfMonth.setText(num);
+						}else {
+							tfDay.setText(num);
+						}
+					}
 				}
 			}
+			
 
 		}		
 		
@@ -437,6 +509,12 @@ public class Sign_UpFrame extends JFrame{
 					tfPwCkForm.setBorder(new LineBorder(st.mainColor,1,true));
 				}else if(obj == tfName && !checkErr(obj)) {
 					tfNameForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}else if(obj == tfYear && !checkErr(obj)) {
+					yearForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}else if(obj == tfMonth && !checkErr(obj)) {
+					monthForm.setBorder(new LineBorder(st.mainColor,1,true));
+				}else if(obj == tfDay && !checkErr(obj)) {
+					dayForm.setBorder(new LineBorder(st.mainColor,1,true));
 				}
 				
 				if(obj == tfPwDefault) {
@@ -458,19 +536,16 @@ public class Sign_UpFrame extends JFrame{
 						tfName.setText("");
 					}
 				}else if(obj == tfYear) {
-					yearForm.setBorder(new LineBorder(st.mainColor,1,true));
 					if(tfYear.getText().equals("YYYY")) {
 						tfYear.setForeground(st.inputBlack);
 						tfYear.setText("");
 					}
 				}else if(obj == tfMonth) {
-					monthForm.setBorder(new LineBorder(st.mainColor,1,true));
 					if(tfMonth.getText().equals("MM")) {
 						tfMonth.setForeground(st.inputBlack);
 						tfMonth.setText("");
 					}
 				}else if(obj == tfDay) {
-					dayForm.setBorder(new LineBorder(st.mainColor,1,true));
 					if(tfDay.getText().equals("DD")) {
 						tfDay.setForeground(st.inputBlack);
 						tfDay.setText("");
@@ -484,6 +559,11 @@ public class Sign_UpFrame extends JFrame{
 			
 				Object obj = e.getSource();
 				
+				String name = tfName.getText();
+				String year = tfYear.getText();
+				String month = tfMonth.getText();
+				String day = tfDay.getText();
+				
 				// Input 박스 //
 				if(obj == tfEmail && !checkErr(obj)) {
 					tfEmailForm.setBorder(new LineBorder(st.lightGray,1,true));
@@ -493,6 +573,12 @@ public class Sign_UpFrame extends JFrame{
 					tfPwCkForm.setBorder(new LineBorder(st.lightGray,1,true));
 				}else if(obj == tfName && !checkErr(obj)) {
 					tfNameForm.setBorder(new LineBorder(st.lightGray,1,true));
+				}else if(obj == tfYear && !checkErr(obj)) {
+					yearForm.setBorder(new LineBorder(st.lightGray,1,true));
+				}else if(obj == tfMonth && !checkErr(obj)) {
+					monthForm.setBorder(new LineBorder(st.lightGray,1,true));
+				}else if(obj == tfDay && !checkErr(obj)) {
+					dayForm.setBorder(new LineBorder(st.lightGray,1,true));
 				}
 				
 				if(obj == tfPw) {
@@ -515,23 +601,65 @@ public class Sign_UpFrame extends JFrame{
 						tfName.setForeground(st.inputGray);
 						tfName.setText("닉네임은 6자이내 한글로 입력해주세요");
 					}
+					String korCk = "^[가-힣]*$";
+					if(!(name.matches(korCk))&&!(checkErr(obj))) { 
+						tfNameForm.setBorder(new LineBorder(Color.red,1,true));
+						tfErr.replace(obj, true);
+						nameMessage.setText("올바르지 않은 형식입니다.");
+					}
 				}else if(obj == tfYear) {
-					yearForm.setBorder(new LineBorder(st.lightGray,1,true));
-					if(tfYear.getText().equals("")) {
+					if(year.equals("")) {
 						tfYear.setForeground(st.inputGray);
 						tfYear.setText("YYYY");
 					}
+					try {
+						if(Integer.parseInt(year)<1900) {
+							tfYear.setText(String.valueOf(1900));
+						}else if(Integer.parseInt(year)>LocalDate.now().getYear()) {
+							tfYear.setText(String.valueOf(LocalDate.now().getYear()));
+						}
+					} catch (NumberFormatException e2) {
+					}
 				}else if(obj == tfMonth) {
-					monthForm.setBorder(new LineBorder(st.lightGray,1,true));
-					if(tfMonth.getText().equals("")) {
+					if(month.equals("")) {
 						tfMonth.setForeground(st.inputGray);
 						tfMonth.setText("MM");
 					}
+					try {
+						if(Integer.parseInt(month)<1) {
+							tfMonth.setText(String.valueOf(1));
+						}else if(Integer.parseInt(month)>12) {
+							tfMonth.setText(String.valueOf(12));
+						}
+					} catch (NumberFormatException e2) {
+					}
 				}else if(obj == tfDay) {
-					dayForm.setBorder(new LineBorder(st.lightGray,1,true));
-					if(tfDay.getText().equals("")) {
+					if(day.equals("")) {
 						tfDay.setForeground(st.inputGray);
 						tfDay.setText("DD");
+					}
+					try {
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.YEAR, Integer.parseInt(year));
+						cal.set(Calendar.MONTH, Integer.parseInt(month)-1);
+						int maxDay =cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+						try {
+							if(Integer.parseInt(day)<1) {
+								tfDay.setText(String.valueOf(1));
+							}else if(Integer.parseInt(day)> maxDay){
+								tfDay.setText(String.valueOf(maxDay));
+							}
+						} catch (NumberFormatException e2) {
+						}
+					} catch (NumberFormatException e2) {
+						try {
+							
+						} catch (NumberFormatException e3) {
+							if(Integer.parseInt(day)>28 || Integer.parseInt(day)<1) {
+								tfDay.setForeground(st.inputGray);
+								tfDay.setText("DD");
+							}
+						}
 					}
 				}
 				
@@ -548,8 +676,8 @@ public class Sign_UpFrame extends JFrame{
 				
 				if(obj == btnSign_Up) {
 					btnSign_Up.setBackground(st.mainColor_shades);
-				}else if(obj  == rogin) {
-					rogin.setForeground(st.mainColor);
+				}else if(obj  == login) {
+					login.setForeground(st.mainColor);
 				}
 				
 			}
@@ -560,10 +688,129 @@ public class Sign_UpFrame extends JFrame{
 				
 				if(obj == btnSign_Up) {
 					btnSign_Up.setBackground(st.mainColor);
-				}else if(obj  == rogin) {
-					rogin.setForeground(st.inputBlack);
+				}else if(obj  == login) {
+					login.setForeground(st.inputBlack);
 				}
 				
+			}
+			
+		}
+
+		// 액션 이벤트 //
+		class ActionHandler implements ActionListener{
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				Object obj = e.getSource();
+				// 회원가입 버튼 //
+				if(obj == btnSign_Up) {
+					
+					int cnt = checkSign_up();
+					if(cnt != -1) {
+						JOptionPane.showMessageDialog(null, "가입 성공","회원 가입 성공",JOptionPane.PLAIN_MESSAGE);
+						setVisible(false);
+						LoginFrame lf = new LoginFrame("Shared Diary : Login");
+					}
+					
+				}
+				
+				// 로그인화면 돌아가기 버튼 //
+				if(obj == login) {
+					setVisible(false);
+					LoginFrame lf = new LoginFrame("Shared Diary : Login"); 
+				}
+				
+			}
+
+			private int checkSign_up() {
+				
+				String emailValue = tfEmail.getText();
+				String pwValue = new String(tfPw.getPassword());
+				String pwCkValue = new String(tfPwCk.getPassword());
+				String nameValue = tfName.getText();
+				String yearValue = tfYear.getText();
+				String monthValue = tfMonth.getText();
+				String dayValue = tfDay.getText();
+				String birthValue = yearValue+"/"+monthValue+"/"+dayValue;
+				if(tfEmail.getText().equals("이메일")) {
+					emailMessage.setText("이메일을 입력해주세요.");
+					tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfEmail, true);
+				}
+				if(pwValue.length()<8) {
+					pwMessage.setText("비밀번호를 8자이상 입력해주세요.");
+					tfPwForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfPw, true);
+					
+				}else if(pwCkValue.equals("") && !checkErr(tfPw)){
+					pwMessage.setText("비밀번호 확인을 해주세요.");
+					tfPwCkForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfPw, true);
+				}
+				if(tfName.getText().equals("닉네임은 6자이내 한글로 입력해주세요")) {
+					nameMessage.setText("닉네임을 입력해주세요.");
+					tfNameForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfName, true);
+				}
+				if(tfYear.getText().equals("YYYY")) {
+					yearForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfYear, true);
+				}
+				if(tfMonth.getText().equals("MM")) {
+					monthForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfMonth, true);
+				}
+				if(tfDay.getText().equals("DD")) {
+					dayForm.setBorder(new LineBorder(Color.red,1,true));
+					tfErr.replace(tfDay, true);
+				}
+				for(int j=0;j<3;j++) {
+					String date = null;
+					if(j==0) {
+						date = tfYear.getText();
+					}else if(j==1) {
+						date = tfMonth.getText();
+					}else {
+						date = tfDay.getText();
+					}
+					for(int i=0;i<date.length();i++	) {
+						if (!(date.charAt(i) >= 0x30 && date.charAt(i) <= 0x39)) {
+							if(j==0) {
+								tfYear.setText("YYYY");
+								yearForm.setBorder(new LineBorder(Color.red,1,true));
+								tfErr.replace(tfYear, true);
+							}else if(j==1){
+								tfMonth.setText("MM");
+								monthForm.setBorder(new LineBorder(Color.red,1,true));
+								tfErr.replace(tfMonth, true);
+							}else {
+								tfDay.setText("DD");
+								dayForm.setBorder(new LineBorder(Color.red,1,true));
+								tfErr.replace(tfDay, true);
+							}
+						}
+					}
+				}
+
+				Set<Object> keySet = tfErr.keySet();
+				int cnt=0;
+				for( Object key : keySet ) {
+					boolean result = tfErr.get(key);
+					if(result==false) {
+						cnt++;
+					}
+				}
+				if(cnt==tfErr.size()) {
+					
+					cnt = userDao.insertUser(emailValue,pwValue,nameValue,birthValue);
+					if(!(cnt == -1)) {
+						System.out.println("가입 성공");
+					}
+					return cnt;
+					
+				}
+				
+				return -1;
 			}
 			
 		}
@@ -576,6 +823,5 @@ public class Sign_UpFrame extends JFrame{
 			}
 			return false;
 		}
-		
 	
 }

@@ -40,7 +40,7 @@ public class LoginFrame extends JFrame {
     private JButton btnSign_Up;
     private boolean loginErr = false;
     private boolean sign_UPErr = false;
-    // 객체 //
+    // 참조 클래스 //
     Style st = new Style();
     UserSD_DAO userDao = new UserSD_DAO();
     
@@ -82,7 +82,7 @@ public class LoginFrame extends JFrame {
 		display.setLayout(null);
 		this.add(display);
 		
-		// 로그인 div //
+		// 로그인 area //
 		LoginForm = new JPanel();
 		LoginForm.setBackground(Color.white);
 		LoginForm.setSize(300,400);
@@ -92,8 +92,8 @@ public class LoginFrame extends JFrame {
 
 		// 로고 //
 		logo = new JLabel("Shared Diary");
-		logo.setBounds(85, 0,150,50);
-		logo.setFont(st.neo_R.deriveFont((float)20));
+		logo.setBounds(77, 0,150,50);
+		logo.setFont(st.neo_EB.deriveFont((float)20));
 		logo.setForeground(st.mainColor);
 		LoginForm.add(logo);
 		
@@ -152,6 +152,8 @@ public class LoginFrame extends JFrame {
 		btnLogin.setBorder(new LineBorder(st.mainColor,1,true));
 		btnLogin.setForeground(Color.white);
 		btnLogin.setFont(st.neo_B);
+		
+		btnLogin.setFocusPainted(false);
 		LoginForm.add(btnLogin);
 		
 		// 회원가입 버튼 //
@@ -161,6 +163,8 @@ public class LoginFrame extends JFrame {
 		btnSign_Up.setBorder(new LineBorder(st.mainColor,1,true));
 		btnSign_Up.setForeground(st.mainColor);
 		btnSign_Up.setFont(st.neo_B);
+		btnSign_Up.setContentAreaFilled(false);
+		btnSign_Up.setFocusPainted(false);
 		LoginForm.add(btnSign_Up);
 		
 	}
@@ -293,6 +297,7 @@ public class LoginFrame extends JFrame {
 		
 	}
 	
+	// 액션 이벤트 //
 	class ActionHandler implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {
