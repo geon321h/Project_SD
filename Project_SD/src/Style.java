@@ -6,9 +6,11 @@ public class Style {
     Color mainColor = new Color(156, 93, 71);
     Color mainColor_shades = new Color(117, 70, 53);
     Color lightGray = new Color(211, 211, 211);
-    Color inputWhite = new Color(247, 247, 247);
+    Color backgroundGray = new Color(235, 235, 235);
+    Color inputWhite = new Color(255, 255, 255);
     Color inputGray = new Color(128, 128, 128);
     Color inputBlack = new Color(55, 55, 55);
+    Color menuBlack = new Color(61, 49, 45);
     
 
     Font neo_H = new Font("나눔스퀘어 네오 Heavy", Font.PLAIN, 16);
