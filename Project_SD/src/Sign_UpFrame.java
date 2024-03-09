@@ -75,6 +75,7 @@ public class Sign_UpFrame extends JFrame{
 		
 		compose(); // 화면 구성
 		setEvent();
+		st.composeJOptionPane();
 		
 		tfErr.put(tfEmail, false);
 		tfErr.put(tfPw, false);
@@ -707,7 +708,10 @@ public class Sign_UpFrame extends JFrame{
 					
 					int cnt = checkSign_up();
 					if(cnt != -1) {
-						JOptionPane.showMessageDialog(null, "가입 성공","회원 가입 성공",JOptionPane.PLAIN_MESSAGE);
+						JLabel paneMessage = new JLabel("가입 성공");
+						paneMessage.setFont(st.neo_R.deriveFont((float)12));
+						paneMessage.setForeground(st.inputBlack);
+						JOptionPane.showMessageDialog(null, paneMessage,"회원 가입 성공",JOptionPane.PLAIN_MESSAGE);
 						setVisible(false);
 						LoginFrame lf = new LoginFrame("Shared Diary : Login");
 					}
@@ -736,6 +740,13 @@ public class Sign_UpFrame extends JFrame{
 					emailMessage.setText("이메일을 입력해주세요.");
 					tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
 					tfErr.replace(tfEmail, true);
+				}else {
+					int cnt = userDao.checkEmail(emailValue);
+					if(cnt != -1) {
+						emailMessage.setText("이미 사용중인 이메일입니다.");
+						tfEmailForm.setBorder(new LineBorder(Color.red,1,true));
+						tfErr.replace(tfEmail, true);
+					}
 				}
 				if(pwValue.length()<8) {
 					pwMessage.setText("비밀번호를 8자이상 입력해주세요.");
