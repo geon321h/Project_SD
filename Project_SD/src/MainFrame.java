@@ -1,6 +1,8 @@
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,6 +16,7 @@ import javax.swing.border.LineBorder;
 public class MainFrame extends JFrame {
 	
 	// container //
+	JPanel display = new JPanel();
 	private JPanel menuForm = null;
 
 	// logo // 
@@ -33,7 +36,7 @@ public class MainFrame extends JFrame {
 	// menu //
 	private JButton groupMenu ;
 	private JButton friendMenu ;
-	private JButton calendarMenu ;
+	private JButton settingMenu ;
 	
     
 	// 유저 식별 키 //
@@ -42,6 +45,10 @@ public class MainFrame extends JFrame {
 	// 참조 클래스 //
     Style st = new Style();
     UserSD_DAO userDao = new UserSD_DAO();
+    MainFrame_group mf_group =null ;
+    MainFrame_user mf_user =null ;
+    MainFrame_friend mf_friend =null ;
+    MainFrame mf = this;
     
 	public MainFrame() {
 		
@@ -54,7 +61,6 @@ public class MainFrame extends JFrame {
 		compose(); // 화면 구성
 		setEvent();
 		st.composeJOptionPane();
-		
 		setSize(1200,800);
 		setVisible(true);
 		setResizable(false); // 창 크기 고정
@@ -62,21 +68,19 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x버튼으로 프로그램 종료
 		
 	}
-	
+
 	private void setEvent() {
 		
-		
+		groupMenu.addMouseListener(new MouseHandler());
+		friendMenu.addMouseListener(new MouseHandler());
+		settingMenu.addMouseListener(new MouseHandler());
 		
 	}
 
 	private void compose() {
-		
-		JPanel display = new JPanel();
 		display.setBackground(Color.white);
 		display.setLayout(null);
 		this.add(display);
-		
-		MainFrame_user mf_user = new MainFrame_user(this,display,userInfo);
 		
 		/*** menu area ***/
 		menuForm = new JPanel();
@@ -137,13 +141,13 @@ public class MainFrame extends JFrame {
 		menuTitle = new JLabel("메뉴 선택");
 		menuTitle.setBounds(30, 258,100,20);
 		menuTitle.setFont(st.neo_B.deriveFont((float)14));
-		menuTitle.setForeground(st.inputGray);
+		menuTitle.setForeground(st.lightGray);
 		menuForm.add(menuTitle);
 		
 		groupMenu = new JButton("내 그룹");
 		groupMenu.setBounds(80, 309,55,20);
 		groupMenu.setFont(st.neo_B.deriveFont((float)16));
-		groupMenu.setForeground(st.inputGray);
+		groupMenu.setForeground(st.menuGray);
 		groupMenu.setBackground(st.menuBlack);
 		groupMenu.setBorder(new LineBorder(st.menuBlack,1,true));
 		groupMenu.setHorizontalAlignment(SwingConstants.LEFT);
@@ -163,7 +167,7 @@ public class MainFrame extends JFrame {
 		friendMenu = new JButton("내 친구");
 		friendMenu.setBounds(80, 369,55,20);
 		friendMenu.setFont(st.neo_B.deriveFont((float)16));
-		friendMenu.setForeground(st.inputGray);
+		friendMenu.setForeground(st.menuGray);
 		friendMenu.setBackground(st.menuBlack);
 		friendMenu.setBorder(new LineBorder(st.menuBlack,1,true));
 		friendMenu.setHorizontalAlignment(SwingConstants.LEFT);
@@ -180,16 +184,16 @@ public class MainFrame extends JFrame {
         Icon.setBounds(30, 362,32,32);
 		menuForm.add(Icon);
 		
-		calendarMenu = new JButton("계정 설정");
-		calendarMenu.setBounds(80, 429,80,20);
-		calendarMenu.setFont(st.neo_B.deriveFont((float)16));
-		calendarMenu.setForeground(st.inputGray);
-		calendarMenu.setBackground(st.menuBlack);
-		calendarMenu.setBorder(new LineBorder(st.menuBlack,1,true));
-		calendarMenu.setHorizontalAlignment(SwingConstants.LEFT);
-		calendarMenu.setContentAreaFilled(false);
-		calendarMenu.setFocusPainted(false);
-		menuForm.add(calendarMenu);
+		settingMenu = new JButton("계정 설정");
+		settingMenu.setBounds(80, 429,80,20);
+		settingMenu.setFont(st.neo_B.deriveFont((float)16));
+		settingMenu.setForeground(st.menuGray);
+		settingMenu.setBackground(st.menuBlack);
+		settingMenu.setBorder(new LineBorder(st.menuBlack,1,true));
+		settingMenu.setHorizontalAlignment(SwingConstants.LEFT);
+		settingMenu.setContentAreaFilled(false);
+		settingMenu.setFocusPainted(false);
+		menuForm.add(settingMenu);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
 		ImageIcon calendar_icon = new ImageIcon("Project_SD/image/icon/calendar_icon.png");
@@ -208,14 +212,91 @@ public class MainFrame extends JFrame {
 		
 	}
 	
-	public void replaceName(String name) {
+	public void replaceName(String name) { // 계정 설정시 이름변경에 따른 메뉴 이름 변경
 		userName.setText(name);
 	}
 
+	// 마우스 이벤트 //
+	class MouseHandler extends MouseAdapter{
+		
+		public void mouseEntered(MouseEvent e) {
+			Object obj = e.getSource();
+		}
+		
+		public void mouseExited(MouseEvent e) {
+			Object obj = e.getSource();
+		}
+		
+		public void mouseClicked(MouseEvent e) {
+			
+			Object obj = e.getSource();
+			userInfo = userDao.getUserById(userInfo.getNo());
+			
+			if(obj == groupMenu) {
+
+				try {
+					mf_user.MainFrame_user_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				try {
+					mf_friend.MainFrame_friend_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				if(groupMenu.getForeground() != st.lightGray) {
+					mf_group = new MainFrame_group(mf,userInfo);
+					groupMenu.setForeground(st.lightGray);
+					friendMenu.setForeground(st.menuGray);
+					settingMenu.setForeground(st.menuGray);
+				}
+				
+			}else if(obj == friendMenu) {
+				
+				try {
+					mf_user.MainFrame_user_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				try {
+					mf_group.MainFrame_group_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				if(friendMenu.getForeground() != st.lightGray) {
+					mf_friend = new MainFrame_friend(mf,userInfo);
+					friendMenu.setForeground(st.lightGray);
+					groupMenu.setForeground(st.menuGray);
+					settingMenu.setForeground(st.menuGray);
+				}
+				
+			}else if(obj == settingMenu) {
+				try {
+					mf_friend.MainFrame_friend_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				try {
+					mf_group.MainFrame_group_exit(); // 계정설정 닫기
+				} catch (Exception e2) {
+					System.out.println("다른 페이지 초기화 아직안됨");
+				}
+				if(settingMenu.getForeground() != st.lightGray) {
+					mf_user = new MainFrame_user(mf,userInfo);
+					settingMenu.setForeground(st.lightGray);
+					friendMenu.setForeground(st.menuGray);
+					groupMenu.setForeground(st.menuGray);
+				}
+				
+			}
+			
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		//LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
 		new MainFrame("Shared Diary",3);
 	}
-
 
 }
