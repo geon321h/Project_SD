@@ -1,6 +1,6 @@
 import javax.swing.JPanel;
 
-public class MainFrame_friend {
+public class MainFrame_group {
 
 	// content area //
 	private JPanel contentForm = null;
@@ -11,11 +11,11 @@ public class MainFrame_friend {
     MainFrame mainFrame = null;
     JPanel display = null;
 	
-    public MainFrame_friend() {
+	public MainFrame_group() {
 
-    }
-    
-	public MainFrame_friend(MainFrame mainFrame, UserSD_DTO userInfo) {
+	}
+	
+	public MainFrame_group(MainFrame mainFrame, UserSD_DTO userInfo) {
 
 		this.display = mainFrame.display;
 		this.mainFrame = mainFrame;
@@ -27,10 +27,10 @@ public class MainFrame_friend {
 		// 껏다 켜야 제데로 출력됨
 		contentForm.setVisible(false);
 		contentForm.setVisible(true);
-		
+	
 	}
 	
-	public void MainFrame_friend_exit() {
+	public void MainFrame_group_exit() {
 
 		contentForm.setVisible(false);
 		
@@ -51,5 +51,6 @@ public class MainFrame_friend {
 		display.add(contentForm);
 		
 	}
+	
 	
 }
