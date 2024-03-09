@@ -125,13 +125,15 @@ public class UserSD_DAO {
 			rs = ps.executeQuery();
 			if(rs.next()) { 
 				no = rs.getInt("no");
-				String email = rs.getString("name");
+				String email = rs.getString("email");
+				String pw = rs.getString("pw");
 				String name = rs.getString("name");
 				String birth = String.valueOf(rs.getDate("birth"));
 
 				Dto = new UserSD_DTO();
 				Dto.setNo(no);
 				Dto.setEmail(email);
+				Dto.setPw(pw);
 				Dto.setName(name);
 				Dto.setBirth(birth);
 			}
@@ -155,6 +157,104 @@ public class UserSD_DAO {
 			}			
 		}
 		return Dto;
+	}
+
+	public int checkEmail(String emailValue) {
+
+		connect();
+		String sql = "select no from userSD where email=?";
+		int no = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, emailValue);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				no = rs.getInt("no");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return no;
+		
+	}
+
+	public int deleteUser(int no) {
+		connect();
+		String sql = "delete userSD where no = ?";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1,no);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+		
+	}
+
+	public int updateUser(int no, String value, String column) {
+		connect();
+		System.out.println(no+value+column);
+		String sql = "update userSD set "+column+" = ? where no = ?";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,value);
+			ps.setInt(2,no);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+		
 	}
 	
 	
