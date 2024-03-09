@@ -7,8 +7,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-import java.util.Calendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,13 +16,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 public class MainFrame_user extends JFrame {
 
-	private JPanel contentForm = null;
 	// content area //
+	private JPanel contentForm = null;
 	private JPanel userSettingForm = null;
     // icon //
     private JLabel Icon = null;
@@ -61,16 +58,29 @@ public class MainFrame_user extends JFrame {
     UserSD_DAO userDao = new UserSD_DAO();
     UserSD_DTO userInfo = new UserSD_DTO();
     MainFrame mainFrame = null;
+    JPanel display = null;
 	
-	public MainFrame_user(MainFrame mainFrame, JPanel display, UserSD_DTO userInfo) {
+	public MainFrame_user(MainFrame mainFrame, UserSD_DTO userInfo) {
 
-		compose(display,userInfo);
-		this.userInfo = userInfo;
+		this.display = mainFrame.display;
 		this.mainFrame = mainFrame;
-		st.composeJOptionPane();
+		this.userInfo = userInfo;
+		compose(display,userInfo);
 		setEvent();
+		st.composeJOptionPane();
+		
+		// 껏다 켜야 제데로 출력됨
+		contentForm.setVisible(false);
+		contentForm.setVisible(true);
 		
 	}
+	
+	public void MainFrame_user_exit() {
+
+		contentForm.setVisible(false);
+		
+	}
+
 
 	private void setEvent() {
 
@@ -133,7 +143,7 @@ public class MainFrame_user extends JFrame {
         userSettingForm.add(infoLabel);
 
         userEmailSetting = new JLabel(userInfo.getEmail());
-        userEmailSetting.setBounds(340, 175,160,26);
+        userEmailSetting.setBounds(340, 175,250,26);
         userEmailSetting.setFont(st.neo_R.deriveFont((float)14));
         userEmailSetting.setForeground(st.inputBlack);
         userEmailSetting.setBorder(new LineBorder(st.inputWhite,1,true));
