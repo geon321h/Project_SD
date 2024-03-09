@@ -12,6 +12,7 @@ public class Style {
     Color backgroundGray = new Color(235, 235, 235);
     Color inputWhite = new Color(255, 255, 255);
     Color inputGray = new Color(128, 128, 128);
+    Color menuGray = new Color(98, 98, 98);
     Color DimGray = new Color(61, 61, 61);
     Color inputBlack = new Color(55, 55, 55);
     Color menuBlack = new Color(20, 12, 9);
