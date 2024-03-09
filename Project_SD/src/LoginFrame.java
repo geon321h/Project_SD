@@ -172,11 +172,8 @@ public class LoginFrame extends JFrame {
 	// 키보드 이벤트 //
 	class keyHandler extends KeyAdapter{
 		
-		public void keyPressed(KeyEvent e){
-		
+		public void keyTyped(KeyEvent e) {
 			Object obj = e.getSource();
-			
-			// Input 박스 //
 			if(obj == tfEmail) {
 				tfEmail.requestFocus();
 				if(tfEmail.getText().equals("이메일")) {
@@ -187,6 +184,13 @@ public class LoginFrame extends JFrame {
 					loginErr = false;
 				}
 			}
+		}
+		
+		public void keyPressed(KeyEvent e){
+		
+			Object obj = e.getSource();
+			
+			// Input 박스 //
 			if(obj == tfPw) {
 				tfPwForm.setBorder(new LineBorder(st.mainColor,1,true));
 				loginMessageClear();
@@ -276,8 +280,8 @@ public class LoginFrame extends JFrame {
 			if(obj == btnLogin) {
 				btnLogin.setBackground(st.mainColor_shades);
 			}else if(obj  == btnSign_Up) {
-				btnSign_Up.setBorder(new LineBorder(st.mainColor_shades,1,true));
-				btnSign_Up.setForeground(st.mainColor_shades);
+				btnSign_Up.setBorder(new LineBorder(st.mainColor_thin,1,true));
+				btnSign_Up.setForeground(st.mainColor_thin);
 			}
 			
 		}
