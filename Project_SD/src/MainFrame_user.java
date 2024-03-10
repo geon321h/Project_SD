@@ -403,7 +403,6 @@ public class MainFrame_user extends JFrame {
 				JLabel paneMessage = new JLabel("탈퇴 하시겠습니까?");
 				paneMessage.setFont(st.neo_R.deriveFont((float)12));
 				paneMessage.setForeground(st.inputBlack);
-				
 				int yesOrNo = JOptionPane.showConfirmDialog(null, paneMessage,"탈퇴 메세지",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
 
 				if(yesOrNo == 0) {
