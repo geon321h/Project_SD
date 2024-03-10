@@ -48,6 +48,7 @@ public class MainFrame extends JFrame {
     MainFrame_group mf_group =null ;
     MainFrame_user mf_user =null ;
     MainFrame_friend mf_friend =null ;
+    MainFrame.MouseHandler mouseHandler = new MainFrame.MouseHandler();
     MainFrame mf = this;
     
 	public MainFrame() {
@@ -61,6 +62,9 @@ public class MainFrame extends JFrame {
 		compose(); // 화면 구성
 		setEvent();
 		st.composeJOptionPane();
+		
+		mouseHandler.menuOpen(friendMenu);
+		
 		setSize(1200,800);
 		setVisible(true);
 		setResizable(false); // 창 크기 고정
@@ -219,19 +223,17 @@ public class MainFrame extends JFrame {
 	// 마우스 이벤트 //
 	class MouseHandler extends MouseAdapter{
 		
-		public void mouseEntered(MouseEvent e) {
-			Object obj = e.getSource();
-		}
-		
-		public void mouseExited(MouseEvent e) {
-			Object obj = e.getSource();
-		}
-		
 		public void mouseClicked(MouseEvent e) {
 			
 			Object obj = e.getSource();
 			userInfo = userDao.getUserById(userInfo.getNo());
 			
+			menuOpen(obj);
+			
+		}
+
+		public void menuOpen(Object obj) {
+
 			if(obj == groupMenu) {
 
 				try {
@@ -296,7 +298,7 @@ public class MainFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		//LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
-		new MainFrame("Shared Diary",3);
+		new MainFrame("Shared Diary",1);
 	}
 
 }
