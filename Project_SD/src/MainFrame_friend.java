@@ -245,7 +245,7 @@ public class MainFrame_friend {
 		}
 		
 		public String getMenu(int num) {
-			
+
 			switch (num) {
 			case 1: 
 				return friendListMenu.getText();

@@ -1,9 +1,11 @@
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 public class MainFrame_group {
 
 	// content area //
 	private JPanel contentForm = null;
+	JPanel groupForm = null;
 	// 참조 클래스 //
     Style st = new Style();
     UserSD_DAO userDao = new UserSD_DAO();
@@ -49,6 +51,16 @@ public class MainFrame_group {
 		contentForm.setLayout(null);
 		contentForm.setLocation(220, 0);
 		display.add(contentForm);
+		
+		groupForm = new JPanel();
+		groupForm.setBackground(st.inputWhite);
+		groupForm.setBounds(61,50,849,660);
+		groupForm.setLayout(null);
+		groupForm.setBorder(new LineBorder(st.lightGray,1,true));
+		contentForm.add(groupForm);
+		
+		
+		
 		
 	}
 	
