@@ -148,5 +148,36 @@ public class friendSD_DAO {
 		}
 		return cnt;		
 	}
+
+	public int insertFriend(int userNo, int friendNo) {
+		connect();
+		String sql = "insert into friendSD values(?,?,?)";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, userNo);
+			ps.setInt(2, friendNo);
+			ps.setString(3, "N");
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
 	
 }
