@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
 		setEvent();
 		st.composeJOptionPane();
 		
-		mouseHandler.menuOpen(friendMenu);
+		mouseHandler.menuOpen(groupMenu);
 		
 		setSize(1200,800);
 		setVisible(true);
@@ -273,6 +273,7 @@ public class MainFrame extends JFrame {
 				}
 				
 			}else if(obj == settingMenu) {
+				
 				try {
 					mf_friend.MainFrame_friend_exit(); // 계정설정 닫기
 				} catch (Exception e2) {
