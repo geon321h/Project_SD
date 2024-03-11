@@ -161,7 +161,7 @@ public class MainFrame_friend {
 				
 			}
 			
-			private void menuOpen(Object obj) {
+			public void menuOpen(Object obj) {
 
 				if(obj == friendListMenu) {
 					
@@ -174,7 +174,7 @@ public class MainFrame_friend {
 					friendListMenu.setForeground(st.mainColor);
 					
 					if(fc != null) {
-						fc.test(userSearchMenu.getText());						
+						fc.closeContent();						
 					}
 					fc = new friend_content(mf_f,userInfo,friendListMenu.getText()); 
 					
@@ -189,7 +189,7 @@ public class MainFrame_friend {
 					userSearchMenu.setForeground(st.mainColor);
 					
 					if(fc != null) {
-						fc.test(userSearchMenu.getText());						
+						fc.closeContent();						
 					}
 					fc = new friend_content(mf_f,userInfo,userSearchMenu.getText());
 					
@@ -204,7 +204,7 @@ public class MainFrame_friend {
 					friendToMenu.setForeground(st.mainColor);
 					
 					if(fc != null) {
-						fc.test(userSearchMenu.getText());						
+						fc.closeContent();						
 					}
 					fc = new friend_content(mf_f,userInfo,friendToMenu.getText());
 					
@@ -219,7 +219,7 @@ public class MainFrame_friend {
 					friendFromMenu.setForeground(st.mainColor);
 					
 					if(fc != null) {
-						fc.test(userSearchMenu.getText());						
+						fc.closeContent();						
 					}
 					fc = new friend_content(mf_f,userInfo,friendFromMenu.getText());
 					
