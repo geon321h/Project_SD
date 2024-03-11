@@ -77,7 +77,7 @@ public class friend_content {
 		}else if(menu.equals(mainFrame_friend.getMenu(2))) {
 			// 검색창 짜기 //
 			JPanel searchUserForm = new JPanel();
-			searchUserForm.setBounds(225, 0,300,56);
+			searchUserForm.setBounds(225,0,300,56);
 			searchUserForm.setBorder(new LineBorder(st.mainColor,2,true));
 			searchUserForm.setLayout(null);
 			friendContentForm.add(searchUserForm);
@@ -98,7 +98,7 @@ public class friend_content {
 			searchUserForm.add(searchUser);
 			searchUser.addKeyListener(new keyHandler());
 			// 테이블 짜기 //
-			createTableAdd("");
+			createTableAdd("%%");
 		}else if(menu.equals(mainFrame_friend.getMenu(3))) {
 			// 테이블 짜기 //
 			createTableTo();
@@ -115,21 +115,26 @@ public class friend_content {
 		Object[] columnNames = {"이름","친구신청"};
 		rowData = new Object[lists.size()][2];
 		freindData(2); 
-		
-		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
 		model = tableProtect(rowData,columnNames);
 		table = new JTable(model);
+		
 		JPanel searchTableForm = new JPanel();
 		searchTableForm.setBounds(100, 100,566,310);
 		searchTableForm.setBorder(new LineBorder(st.mainColor,0,true));
 		searchTableForm.setLayout(null);
 		friendContentForm.add(searchTableForm);
-		table.addMouseListener(new MouseHandler());
+		
+		JPanel line = new JPanel();
+		line.setBounds(0, 0,586,1);
+		line.setBackground(st.inputBlack);
+		searchTableForm.add(line);
 		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		scrollPane.setBounds(0, 0, 566,310);
+		scrollPane.setBounds(0, 1, 586,308);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setBackground(st.inputWhite);
 		searchTableForm.add(scrollPane);
@@ -140,6 +145,11 @@ public class friend_content {
 		
 		table.getColumn("이름").setPreferredWidth(480); // 테이블 내 컨텐츠 행길이 조정
 		table.getColumn("친구신청").setPreferredWidth(80);
+		
+		line = new JPanel();
+		line.setBackground(st.inputBlack);
+		line.setBounds(0, 309,586,1);
+		searchTableForm.add(line);
 		
 	}
 	
@@ -154,7 +164,7 @@ public class friend_content {
 		model = tableProtect(rowData,columnNames);
 		table = new JTable(model);
 		JPanel searchTableForm = new JPanel();
-		searchTableForm.setBounds(100, 100,566,310);
+		searchTableForm.setBounds(100, 100,586,310);
 		searchTableForm.setBorder(new LineBorder(st.mainColor,0,true));
 		searchTableForm.setLayout(null);
 		friendContentForm.add(searchTableForm);
@@ -183,12 +193,23 @@ public class friend_content {
 		table = new JTable(model);
 		table.addMouseListener(new MouseHandler());
 		table.setTableHeader(null); // 테이블 헤더 지우기
+		
+		JPanel line = new JPanel();
+		line.setBounds(0, 0,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
+		
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		scrollPane.setBounds(0, 0, 766,410);
+		scrollPane.setBounds(0, 1, 766,408);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		friendContentForm.add(scrollPane);
+		
+		line = new JPanel();
+		line.setBounds(0, 409,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
 		
 		// 테이블 상세 설정 //
 		tableStyle(table); // 기본 테이블 스타일 설정
@@ -234,12 +255,23 @@ public class friend_content {
 		table = new JTable(model);
 		table.addMouseListener(new MouseHandler());
 		table.setTableHeader(null); // 테이블 헤더 지우기
+		
+		JPanel line = new JPanel();
+		line.setBounds(0, 0,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
+		
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		scrollPane.setBounds(0, 0, 766,410);
+		scrollPane.setBounds(0, 1, 766,408);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		friendContentForm.add(scrollPane);
+		
+		line = new JPanel();
+		line.setBounds(0, 409,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
 		
 		// 테이블 상세 설정 //
 		tableStyle(table); // 기본 테이블 스타일 설정
@@ -296,12 +328,22 @@ public class friend_content {
 		table.getColumn("생일").setPreferredWidth(550);
 		table.getColumn("삭제").setPreferredWidth(10);
 		
+		JPanel line = new JPanel();
+		line.setBounds(0, 0,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
+		
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		scrollPane.setBounds(0, 0, 766,410);
+		scrollPane.setBounds(0, 1, 766,408);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		friendContentForm.add(scrollPane);
+		
+		line = new JPanel();
+		line.setBounds(0, 409,766,1);
+		line.setBackground(st.inputBlack);
+		friendContentForm.add(line);
 
 	}
 
@@ -412,6 +454,7 @@ public class friend_content {
 				int row = -1;
 				String tableValue = null;
 				String friend = null;
+				
 				try {
 					row = table.getSelectedRow();
 					int col = table.getSelectedColumn();
@@ -456,9 +499,10 @@ public class friend_content {
 						createTableTo_after();
 					}
 				}else if(tableValue.equals("친구 신청")) {
-					int cnt = 0;
+					int cnt = friendDao.insertFriend(userInfo.getNo(),friendNo);
+					String searchName = "%"+searchUser.getText()+"%";
 					if(cnt != -1 && cnt != 0) {
-						createTableAdd_after(friend);
+						createTableAdd_after(searchName);
 					}
 				}
 				
