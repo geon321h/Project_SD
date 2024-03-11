@@ -176,9 +176,10 @@ public class LoginFrame extends JFrame {
 			Object obj = e.getSource();
 			if(obj == tfEmail) {
 				tfEmail.requestFocus();
-				if(tfEmail.getText().equals("이메일")) {
+				if(tfEmail.getText().contains("이메일")) {
 					tfEmail.setForeground(st.inputBlack);
-					tfEmail.setText("");
+					String emailInput = tfEmail.getText().replace("이메일","");
+					tfEmail.setText(emailInput);
 					tfEmailForm.setBorder(new LineBorder(st.mainColor,1,true));
 					loginMessageClear();
 					loginErr = false;
