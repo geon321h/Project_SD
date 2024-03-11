@@ -1,15 +1,19 @@
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import DB_SD.friendJoin_DAO;
@@ -24,6 +28,7 @@ public class friend_content {
 	private Object[][] rowData ;
 	private JTable table;
 	private JScrollPane scrollPane;
+	private JTextField searchUser;
 	// 참조 클래스 //
     Style st = new Style();
     UserSD_DAO userDao = new UserSD_DAO();
@@ -33,7 +38,7 @@ public class friend_content {
     ArrayList<friendJoin_DTO> lists = null;
     friendJoin_DAO fJoinDao = new friendJoin_DAO();
     friendSD_DAO friendDao = new friendSD_DAO();
-	
+    DefaultTableModel model;
 	public friend_content() {
 	
 	}
@@ -54,12 +59,6 @@ public class friend_content {
 	}
 
 	private void setEvent() {
-		try {
-			table.addMouseListener(new MouseHandler());
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
 		
 	}
 
@@ -76,6 +75,30 @@ public class friend_content {
 			// 테이블 짜기 //
 			createTableList();
 		}else if(menu.equals(mainFrame_friend.getMenu(2))) {
+			// 검색창 짜기 //
+			JPanel searchUserForm = new JPanel();
+			searchUserForm.setBounds(225, 0,300,56);
+			searchUserForm.setBorder(new LineBorder(st.mainColor,2,true));
+			searchUserForm.setLayout(null);
+			friendContentForm.add(searchUserForm);
+			
+			JLabel search_Icon = new JLabel(" ", JLabel.CENTER);
+			ImageIcon Icon = new ImageIcon("Project_SD/image/icon/search_icon.png");
+			search_Icon.setIcon(Icon);
+			search_Icon.setBounds(13, 11,34,34);
+			searchUserForm.add(search_Icon);
+			
+			searchUser = new JTextField("");
+			searchUser.setBounds(47, 2,251,52);
+			searchUser.setBackground(st.inputWhite);
+			searchUser.setHorizontalAlignment(JTextField.RIGHT);
+			searchUser.setBorder(BorderFactory.createEmptyBorder(5, 20, 4, 20));
+			searchUser.setForeground(st.inputBlack);
+			searchUser.setFont(st.neo_R.deriveFont((float)16));
+			searchUserForm.add(searchUser);
+			searchUser.addKeyListener(new keyHandler());
+			// 테이블 짜기 //
+			createTableAdd("");
 		}else if(menu.equals(mainFrame_friend.getMenu(3))) {
 			// 테이블 짜기 //
 			createTableTo();
@@ -86,6 +109,68 @@ public class friend_content {
 		}
 	}
 	
+	private void createTableAdd(String searchName) {
+		
+		lists = fJoinDao.getBeforeFriendByName(userInfo.getNo(),searchName);
+		Object[] columnNames = {"이름","친구신청"};
+		rowData = new Object[lists.size()][2];
+		freindData(2); 
+		
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		JPanel searchTableForm = new JPanel();
+		searchTableForm.setBounds(100, 100,566,310);
+		searchTableForm.setBorder(new LineBorder(st.mainColor,0,true));
+		searchTableForm.setLayout(null);
+		friendContentForm.add(searchTableForm);
+		table.addMouseListener(new MouseHandler());
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		scrollPane = new JScrollPane(table);
+		scrollPane.getViewport().setBackground(st.inputWhite);
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setBounds(0, 0, 566,310);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.getVerticalScrollBar().setBackground(st.inputWhite);
+		searchTableForm.add(scrollPane);
+		
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+		
+		table.getColumn("이름").setPreferredWidth(480); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("친구신청").setPreferredWidth(80);
+		
+	}
+	
+	private void createTableAdd_after(String searchName) {
+		
+		lists = fJoinDao.getBeforeFriendByName(userInfo.getNo(),searchName);
+		Object[] columnNames = {"이름","친구신청"};
+		rowData = new Object[lists.size()][2];
+		freindData(2); 
+		
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		JPanel searchTableForm = new JPanel();
+		searchTableForm.setBounds(100, 100,566,310);
+		searchTableForm.setBorder(new LineBorder(st.mainColor,0,true));
+		searchTableForm.setLayout(null);
+		friendContentForm.add(searchTableForm);
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		scrollPane.setViewportView(table);
+		
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+		
+		table.getColumn("이름").setPreferredWidth(480); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("친구신청").setPreferredWidth(80);
+		
+	}
+
 	private void createTableTo() {
 
 		lists = fJoinDao.getBeforeFriend(userInfo.getNo(),"user_no","friend_no");
@@ -94,16 +179,9 @@ public class friend_content {
 		freindData(3); 
 		
 		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
-		DefaultTableModel model = tableProtect(rowData,columnNames);
-		table = new JTable(model) {
-			public Class<?> getColumnClass(int column)  {
-                   // row - JTable에 입력된 2차원 배열의  행에 속한다면
-                   // 모든 컬럼을 입력된 형으로  반환한다.
-                   
-                   // 다시말해, 어떤 행이든 간에 입력된  column의 class를 반환하도록 한 것
-                   return getValueAt(0,  column).getClass();
-              }
-		};
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.addMouseListener(new MouseHandler());
 		table.setTableHeader(null); // 테이블 헤더 지우기
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
@@ -111,6 +189,29 @@ public class friend_content {
 		scrollPane.setBounds(0, 0, 766,410);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		friendContentForm.add(scrollPane);
+		
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+		
+		table.getColumn("이름").setPreferredWidth(720); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("취소").setPreferredWidth(40);
+		
+	}
+	
+	private void createTableTo_after() {
+
+		lists = fJoinDao.getBeforeFriend(userInfo.getNo(),"user_no","friend_no");
+		Object[] columnNames = {"이름","취소"};
+		rowData = new Object[lists.size()][2];
+		freindData(3); 
+		
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		scrollPane.setViewportView(table);
 		
 		// 테이블 상세 설정 //
 		tableStyle(table); // 기본 테이블 스타일 설정
@@ -129,16 +230,9 @@ public class friend_content {
 		freindData(4); 
 		
 		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
-		DefaultTableModel model = tableProtect(rowData,columnNames);
-		table = new JTable(model) {
-			public Class<?> getColumnClass(int column) throws NullPointerException {
-                   // row - JTable에 입력된 2차원 배열의  행에 속한다면
-                   // 모든 컬럼을 입력된 형으로  반환한다.
-                   
-                   // 다시말해, 어떤 행이든 간에 입력된  column의 class를 반환하도록 한 것
-                   return getValueAt(0,  column).getClass();
-              }
-		};
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.addMouseListener(new MouseHandler());
 		table.setTableHeader(null); // 테이블 헤더 지우기
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
@@ -157,6 +251,31 @@ public class friend_content {
 		table.getColumn("거절").setPreferredWidth(40);
 		
 	}
+	
+	private void createTableFrom_after() {
+
+		lists = fJoinDao.getBeforeFriend(userInfo.getNo(),"friend_no","user_no");
+		Object[] columnNames = {"이름","수락"," ","거절"};
+		rowData = new Object[lists.size()][4];
+		freindData(4); 
+		
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		scrollPane.setViewportView(table);
+		
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+		
+		table.getColumn("이름").setPreferredWidth(660); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("수락").setPreferredWidth(40);
+		table.getColumn(" ").setPreferredWidth(20);
+		table.getColumn("거절").setPreferredWidth(40);
+		
+	}
 
 	private void createTableList() {
 
@@ -164,19 +283,18 @@ public class friend_content {
 		Object[] columnNames = {"이름","생일","삭제"};
 		rowData = new Object[lists.size()][3];
 		freindData(1); 
-		
 		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
-		DefaultTableModel model = tableProtect(rowData,columnNames);
-		table = new JTable(model) {
-			public Class<?> getColumnClass(int column)  {
-                   // row - JTable에 입력된 2차원 배열의  행에 속한다면
-                   // 모든 컬럼을 입력된 형으로  반환한다.
-                   
-                   // 다시말해, 어떤 행이든 간에 입력된  column의 class를 반환하도록 한 것
-                   return getValueAt(0,  column).getClass();
-              }
-		};
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.addMouseListener(new MouseHandler());
 		table.setTableHeader(null); // 테이블 헤더 지우기
+		
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		
+		table.getColumn("이름").setPreferredWidth(120); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("생일").setPreferredWidth(550);
+		table.getColumn("삭제").setPreferredWidth(10);
 		
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
@@ -184,10 +302,23 @@ public class friend_content {
 		scrollPane.setBounds(0, 0, 766,410);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		friendContentForm.add(scrollPane);
-		
+
+	}
+
+	private void createTableList_after() {
+
+		lists = fJoinDao.getMyFriend(userInfo.getNo());
+		Object[] columnNames = {"이름","생일","삭제"};
+		rowData = new Object[lists.size()][3];
+		freindData(1); 
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		scrollPane.setViewportView(table);
 		// 테이블 상세 설정 //
 		tableStyle(table); // 기본 테이블 스타일 설정
-		
 		table.getColumn("이름").setPreferredWidth(120); // 테이블 내 컨텐츠 행길이 조정
 		table.getColumn("생일").setPreferredWidth(550);
 		table.getColumn("삭제").setPreferredWidth(10);
@@ -197,10 +328,17 @@ public class friend_content {
 	private DefaultTableModel tableProtect(Object[][] rowData, Object[] columnNames) {
 		// Jtable 내용 편집 막기
 
-		DefaultTableModel model = new DefaultTableModel(rowData,columnNames) {
+		model = new DefaultTableModel(rowData,columnNames) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
+			public Class<?> getColumnClass(int column)  {
+                // row - JTable에 입력된 2차원 배열의  행에 속한다면
+                // 모든 컬럼을 입력된 형으로  반환한다.
+                
+                // 다시말해, 어떤 행이든 간에 입력된  column의 class를 반환하도록 한 것
+                return getValueAt(0,  column).getClass();
+           }
 			
 		};
 		return model;
@@ -221,7 +359,7 @@ public class friend_content {
 		
 	}
 
-	public void test(String menu) { // 이전에 사용한 페이지 끄기
+	public void closeContent() { // 이전에 사용한 페이지 끄기
 		
 		friendContentForm.setVisible(false);
 		
@@ -236,6 +374,13 @@ public class friend_content {
 				rowData[i][j++] = lists.get(i).getName()+" #"+lists.get(i).getNo();
 				rowData[i][j++] = lists.get(i).getBirth();
 				rowData[i][j++] = Icon;
+				j = 0;
+			}
+		}else if(num == 2) {
+			int j=0;
+			for(int i=0;i<lists.size();i++) {
+				rowData[i][j++] = lists.get(i).getName()+" #"+lists.get(i).getNo();
+				rowData[i][j++] = "친구 신청";
 				j = 0;
 			}
 		}else if(num == 3) {
@@ -264,13 +409,17 @@ public class friend_content {
 			
 			public void mouseClicked(MouseEvent e) {
 				
-				//Object obj = e.getSource();
-				int row = table.getSelectedRow();
-				int col = table.getSelectedColumn();
-				String tableValue = String.valueOf(table.getValueAt(row,col));
+				int row = -1;
+				String tableValue = null;
+				String friend = null;
+				try {
+					row = table.getSelectedRow();
+					int col = table.getSelectedColumn();
+					//System.out.println(row+","+col);
+					friend = String.valueOf(table.getValueAt(row,0));
+					tableValue = String.valueOf(table.getValueAt(row,col));
 				
 				String icon = "Project_SD/image/icon/delete_user_icon.png";
-				String friend = String.valueOf(table.getValueAt(row,0));
 				int friendNo = Integer.parseInt(friend.substring(friend.indexOf("#")+1));
 				friend = friend.substring(0,friend.indexOf(" "));
 				
@@ -288,30 +437,65 @@ public class friend_content {
 							paneMessage_delete.setFont(st.neo_R.deriveFont((float)12));
 							paneMessage_delete.setForeground(st.inputBlack);
 							JOptionPane.showMessageDialog(null, paneMessage_delete,"친구 삭제 완료",JOptionPane.PLAIN_MESSAGE);
-							
-							createTableList();
+							createTableList_after();
 						}
 					}// 삭제
 				}else if(tableValue.equals("수락")) {
 					int cnt = friendDao.updateFriend(userInfo.getNo(),friendNo);
 					if(cnt != -1 && cnt != 0) {
-						createTableFrom();
+						createTableFrom_after();
 					}
 				}else if(tableValue.equals("거절")) {
 					int cnt = friendDao.deleteBeforeFriend(userInfo.getNo(),friendNo);
 					if(cnt != -1 && cnt != 0) {
-						createTableFrom();
+						createTableFrom_after();
 					}
 				}else if(tableValue.equals("취소")) {
 					int cnt = friendDao.deleteBeforeFriend(friendNo,userInfo.getNo());
 					if(cnt != -1 && cnt != 0) {
-						createTableTo();
+						createTableTo_after();
+					}
+				}else if(tableValue.equals("친구 신청")) {
+					int cnt = 0;
+					if(cnt != -1 && cnt != 0) {
+						createTableAdd_after(friend);
 					}
 				}
 				
+				} catch (ArrayIndexOutOfBoundsException e2) {
+				}
 			}
 
 
+			
+		}
+		
+		// 키보드 이벤트 //
+		class keyHandler extends KeyAdapter{
+			
+			public void keyTyped(KeyEvent e) {
+				Object obj = e.getSource();
+				if(obj == searchUser) {
+					if(searchUser.getText().length()>=6) {
+						e.consume();
+					}
+				}
+			}
+			
+			public void keyReleased(KeyEvent e){
+				
+				Object obj = e.getSource();
+				
+				// Input 박스 //
+				if(obj == searchUser) {
+					String searchName = "%"+searchUser.getText()+"%";
+					System.out.println(searchName);
+					createTableAdd_after(searchName);
+					
+				}
+				
+
+			}
 			
 		}
 	
