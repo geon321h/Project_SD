@@ -22,6 +22,7 @@ insert into userSD VALUES (userSD_seq.nextval,'tae@naver.com','12341234','태연
 insert into userSD VALUES (userSD_seq.nextval,'su@daum.net','12341234','수연','2000-7-3');
 insert into userSD VALUES (userSD_seq.nextval,'mi@naver.com','12341234','미연','2012-1-23');
 insert into userSD VALUES (userSD_seq.nextval,'ga@naver.com','12341234','가연','1990-8-17');
+insert into userSD VALUES (userSD_seq.nextval,'cha@naver.com','12341234','영채','2000-1-3');
  
 SELECT * FROM USERSD order by NO;
 
@@ -107,4 +108,20 @@ where friend_no = 3 and user_no = 1
       AND FRIEND_CHECK = 'N';
 
 SELECT * FROM friendSD where(friend_no = 1 and user_no = 8 ) AND FRIEND_CHECK = 'N';
+
+select myF.FRieND_NO
+from (SELECT (CASE WHEN 1 = USER_NO THEN FRieND_NO ELSE USER_NO END) AS FRieND_NO
+      FROM friendSD  
+      where (USER_NO = 1 OR FRieND_NO = 1)
+      and FRieND_CHECK = 'Y') myF 
+      inner join userSD fInfo
+      on myF.FRieND_NO = fInfo.NO;
+      
+select userN.NO,userN.NAME
+from (SELECT (CASE WHEN 2 = USER_NO THEN FRieND_NO ELSE USER_NO END) AS FRIEND_NO
+      FROM friendSD  
+      where (USER_NO = 2 OR FRieND_NO = 2)) friendN
+      right join userSD userN
+      on friendN.FRIEND_NO = userN.NO
+where (friendN.FRIEND_NO is null and not userN.NO = 2) ;
 
