@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class friendSD_DAO {
+public class FriendSD_DAO {
 
 	private String driver = "oracle.jdbc.driver.OracleDriver";
 	private String url = "jdbc:oracle:thin:@localhost:1521:orcl";
@@ -17,10 +17,10 @@ public class friendSD_DAO {
 	Connection conn = null;
 	PreparedStatement ps = null;
 	ResultSet rs = null;
-	friendSD_DTO Dto = null;
-	ArrayList<friendSD_DTO> lists = null;
+	FriendSD_DTO Dto = null;
+	ArrayList<FriendSD_DTO> lists = null;
 	
-	public friendSD_DAO() {
+	public FriendSD_DAO() {
 
 		try {
 

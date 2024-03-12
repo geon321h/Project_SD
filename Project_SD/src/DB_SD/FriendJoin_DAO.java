@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class friendJoin_DAO {
+public class FriendJoin_DAO {
 
 	private String driver = "oracle.jdbc.driver.OracleDriver";
 	private String url = "jdbc:oracle:thin:@localhost:1521:orcl";
@@ -17,10 +17,10 @@ public class friendJoin_DAO {
 	Connection conn = null;
 	PreparedStatement ps = null;
 	ResultSet rs = null;
-	friendJoin_DTO Dto = null;
-	ArrayList<friendJoin_DTO> lists = null;
+	FriendJoin_DTO Dto = null;
+	ArrayList<FriendJoin_DTO> lists = null;
 	
-	public friendJoin_DAO() {
+	public FriendJoin_DAO() {
 
 		try {
 
@@ -48,7 +48,7 @@ public class friendJoin_DAO {
 	
 	}
 	
-	public ArrayList<friendJoin_DTO> getMyFriend(int no) {
+	public ArrayList<FriendJoin_DTO> getMyFriend(int no) {
 		connect();
 		String sql = "select myF.FRIEND_NO,fInfo.NAME,fInfo.BIRTH "
 						+ "from (SELECT (CASE WHEN ? = USER_NO THEN FRIEND_NO ELSE USER_NO END) AS FRIEND_NO"
@@ -71,7 +71,7 @@ public class friendJoin_DAO {
 				String name = rs.getString("NAME");
 				String birth = String.valueOf(rs.getDate("birth"));
 
-				Dto = new friendJoin_DTO();
+				Dto = new FriendJoin_DTO();
 				Dto.setNo(friend_no);
 				Dto.setName(name);
 				Dto.setBirth(birth);
@@ -100,7 +100,7 @@ public class friendJoin_DAO {
 		return lists;
 	}
 
-	public ArrayList<friendJoin_DTO> getBeforeFriend(int no,String column, String column2) {
+	public ArrayList<FriendJoin_DTO> getBeforeFriend(int no,String column, String column2) {
 		connect();
 		String sql = "SELECT fInfo.NAME, fr."+column2
 						+ " FROM (SELECT USER_NO,FRIEND_NO  "
@@ -120,7 +120,7 @@ public class friendJoin_DAO {
 				String name = rs.getString("NAME");
 				int friend_no = rs.getInt(column2);
 
-				Dto = new friendJoin_DTO();
+				Dto = new FriendJoin_DTO();
 				Dto.setNo(friend_no);
 				Dto.setName(name);
 				
@@ -148,7 +148,7 @@ public class friendJoin_DAO {
 		return lists;
 	}
 
-	public ArrayList<friendJoin_DTO> getBeforeFriendByName(int no, String searchName) {
+	public ArrayList<FriendJoin_DTO> getBeforeFriendByName(int no, String searchName) {
 		connect();
 		String sql = "select userN.NO,userN.NAME "
 						+ "from (SELECT (CASE WHEN ? = USER_NO THEN FRieND_NO ELSE USER_NO END) AS FRIEND_NO "
@@ -172,7 +172,7 @@ public class friendJoin_DAO {
 				int friend_no = rs.getInt("NO");
 				String name = rs.getString("NAME");
 
-				Dto = new friendJoin_DTO();
+				Dto = new FriendJoin_DTO();
 				Dto.setNo(friend_no);
 				Dto.setName(name);
 				

@@ -1,6 +1,6 @@
 package DB_SD;
 
-public class friendJoin_DTO {
+public class FriendJoin_DTO {
 
 	// userSD //
 	private int no; 

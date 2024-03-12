@@ -1,6 +1,6 @@
 package DB_SD;
 
-public class friendSD_DTO {
+public class FriendSD_DTO {
 
 	private int user_no;
 	private int friend_no;
