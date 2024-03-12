@@ -25,7 +25,7 @@ public class MainFrame_friend {
     UserSD_DTO userInfo = new UserSD_DTO();
     MainFrame mainFrame = null;
     JPanel display = null;
-    friend_content fc = null;
+    Friend_content fc = null;
     MainFrame_friend.MouseHandler mouseHandler = new MainFrame_friend.MouseHandler();
     MainFrame_friend mf_f = this;
     
@@ -176,7 +176,7 @@ public class MainFrame_friend {
 					if(fc != null) {
 						fc.closeContent();						
 					}
-					fc = new friend_content(mf_f,userInfo,friendListMenu.getText()); 
+					fc = new Friend_content(mf_f,userInfo,friendListMenu.getText()); 
 					
 				}else if(obj == userSearchMenu) {
 					
@@ -191,7 +191,7 @@ public class MainFrame_friend {
 					if(fc != null) {
 						fc.closeContent();						
 					}
-					fc = new friend_content(mf_f,userInfo,userSearchMenu.getText());
+					fc = new Friend_content(mf_f,userInfo,userSearchMenu.getText());
 					
 				}else if(obj == friendToMenu) {
 					
@@ -206,7 +206,7 @@ public class MainFrame_friend {
 					if(fc != null) {
 						fc.closeContent();						
 					}
-					fc = new friend_content(mf_f,userInfo,friendToMenu.getText());
+					fc = new Friend_content(mf_f,userInfo,friendToMenu.getText());
 					
 				}else if(obj == friendFromMenu) {
 					
@@ -221,7 +221,7 @@ public class MainFrame_friend {
 					if(fc != null) {
 						fc.closeContent();						
 					}
-					fc = new friend_content(mf_f,userInfo,friendFromMenu.getText());
+					fc = new Friend_content(mf_f,userInfo,friendFromMenu.getText());
 					
 				}
 
