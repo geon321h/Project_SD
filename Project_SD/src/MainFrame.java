@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -37,7 +38,9 @@ public class MainFrame extends JFrame {
 	private JButton groupMenu ;
 	private JButton friendMenu ;
 	private JButton settingMenu ;
-	
+	// footer /
+	private JLabel logout;
+	private JLabel endBtn;
     
 	// 유저 식별 키 //
 	UserSD_DTO userInfo = null;
@@ -78,6 +81,8 @@ public class MainFrame extends JFrame {
 		groupMenu.addMouseListener(new MouseHandler());
 		friendMenu.addMouseListener(new MouseHandler());
 		settingMenu.addMouseListener(new MouseHandler());
+		logout.addMouseListener(new MouseHandler());
+		endBtn.addMouseListener(new MouseHandler());
 		
 	}
 
@@ -200,7 +205,7 @@ public class MainFrame extends JFrame {
 		menuForm.add(settingMenu);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
-		ImageIcon calendar_icon = new ImageIcon("Project_SD/image/icon/calendar_icon.png");
+		ImageIcon calendar_icon = new ImageIcon("Project_SD/image/icon/settings_icon.png");
         img = calendar_icon.getImage();
     	updateImg = img.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         updateIcon = new ImageIcon(updateImg);
@@ -213,6 +218,23 @@ public class MainFrame extends JFrame {
 		line.setBounds(20, 477,180,1);
 		menuForm.add(line);
 
+		logout = new JLabel("로그아웃");
+		logout.setBounds(50, 700,60,20);
+		logout.setFont(st.neo_B.deriveFont((float)12));
+		logout.setForeground(st.menuGray);
+		menuForm.add(logout);
+		
+		JLabel lb = new JLabel("|");
+		lb.setBounds(105, 700,60,20);
+		lb.setFont(st.neo_B.deriveFont((float)12));
+		lb.setForeground(st.menuGray);
+		menuForm.add(lb);
+
+		endBtn = new JLabel("종료하기");
+		endBtn.setBounds(120, 700,60,20);
+		endBtn.setFont(st.neo_B.deriveFont((float)12));
+		endBtn.setForeground(st.menuGray);
+		menuForm.add(endBtn);
 		
 	}
 	
@@ -229,6 +251,31 @@ public class MainFrame extends JFrame {
 			userInfo = userDao.getUserById(userInfo.getNo());
 			
 			menuOpen(obj);
+			
+			if(obj==logout) {
+				
+				JLabel paneMessage = new JLabel("로그아웃 하시겠습니까?");
+				paneMessage.setFont(st.neo_R.deriveFont((float)12));
+				paneMessage.setForeground(st.inputBlack);
+				int yesOrNo = JOptionPane.showConfirmDialog(null, paneMessage,"로그아웃",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+				
+				if(yesOrNo == 0) {
+					setVisible(false);
+					LoginFrame lf = new LoginFrame("Shared Diary : Login");
+				}
+				
+			}else if(obj==endBtn) {
+				
+				JLabel paneMessage = new JLabel("종료하시겠습니까?");
+				paneMessage.setFont(st.neo_R.deriveFont((float)12));
+				paneMessage.setForeground(st.inputBlack);
+				int yesOrNo = JOptionPane.showConfirmDialog(null, paneMessage,"시스템 종료",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+				
+				if(yesOrNo == 0) {
+					System.exit(0);
+				}
+				
+			}
 			
 		}
 
@@ -300,6 +347,7 @@ public class MainFrame extends JFrame {
 	public static void main(String[] args) {
 		//LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
 		new MainFrame("Shared Diary",1);
+		
 	}
 
 }
