@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.management.loading.PrivateClassLoader;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -91,11 +92,12 @@ public class LoginFrame extends JFrame {
 		display.add(LoginForm);
 
 		// 로고 //
-		logo = new JLabel("Shared Diary");
-		logo.setBounds(77, 0,150,50);
-		logo.setFont(st.neo_EB.deriveFont((float)20));
-		logo.setForeground(st.mainColor);
+		logo = new JLabel(" ", JLabel.CENTER);
+		logo.setBounds(70, 0,180,50);
+		ImageIcon Icon = new ImageIcon("Project_SD/image/icon/logo.png");
+		logo.setIcon(Icon);
 		LoginForm.add(logo);
+		
 		
 		// 아이디 입력 //
 		tfEmailForm = new JPanel();

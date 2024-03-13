@@ -41,12 +41,15 @@ public class Group_content extends JFrame{
 	private JLabel back_Icon;
 	private JButton btnUpdateGroup;
 	private JButton btnInviteList;
+	private JPanel groupWritingForm;
 	// content_WorkspaceForm //
 	private JPanel settingForm;
 	private JTextField groupName;
 	private JButton btnUpdateGroupName;
 	private JButton btnDeleteGroup;
 	private JPanel groupUserForm;
+	private JPanel wirtingForm;
+	private JTextField wirtingTitle;
 	// 참조 클래스 //
     Style st = new Style();
     UserSD_DTO userInfo = new UserSD_DTO();
@@ -145,6 +148,25 @@ public class Group_content extends JFrame{
 		Line.setBounds(50,120,409,1);
 		groupListForm.add(Line);
 		
+		// list //
+		groupWritingForm = new JPanel();
+		groupWritingForm.setBackground(st.inputWhite);
+		groupWritingForm.setBounds(50, 170,409,440);
+		groupWritingForm.setLayout(null);
+		groupListForm.add(groupWritingForm);
+
+		Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,0,409,1);
+		groupWritingForm.add(Line);
+		
+		Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,439,409,1);
+		groupWritingForm.add(Line);
+		
+		createTable_writing_list();
+		
 		/*** workspace area  ***/
 		groupWorkspaceForm = new JPanel();
 		groupWorkspaceForm.setBackground(st.inputWhite);
@@ -152,6 +174,58 @@ public class Group_content extends JFrame{
 		groupWorkspaceForm.setLayout(null);
 		groupWorkspaceForm.setBorder(new LineBorder(st.lightGray,1,true));
 		groupForm.add(groupWorkspaceForm);
+		
+	}
+	
+	private void createWriting(int writingNo) {
+
+		lists = gJoinDao.getWritingInfo(groupInfo.getGroup_no(),writingNo);
+		if(groupWorkspaceForm != null) {
+			groupWorkspaceForm.setVisible(false);
+		}
+		groupWorkspaceForm = new JPanel();
+		groupWorkspaceForm.setBackground(st.inputWhite);
+		groupWorkspaceForm.setBounds(529,0,320,660);
+		groupWorkspaceForm.setLayout(null);
+		groupWorkspaceForm.setBorder(new LineBorder(st.lightGray,1,true));
+		groupForm.add(groupWorkspaceForm);
+		
+		wirtingForm = new JPanel();
+		wirtingForm.setBackground(st.inputWhite);
+		wirtingForm.setBounds(20,40,280,580);
+		wirtingForm.setLayout(null);
+		wirtingForm.setBorder(new LineBorder(st.lightGray,0,true));
+		groupWorkspaceForm.add(wirtingForm);
+		
+		wirtingTitle = new JTextField(lists.get(0).getGroup_writing_title());
+		wirtingTitle.setBounds(0, 0,200,36);
+		wirtingTitle.setFont(st.neo_B.deriveFont((float)24));
+		wirtingTitle.setForeground(st.inputBlack);
+		wirtingTitle.setBackground(st.inputWhite);
+		wirtingTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 4, 5));
+		wirtingForm.add(wirtingTitle);
+		
+		JPanel Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,45,280,1);
+		wirtingForm.add(Line);
+		
+		JLabel writing_userLb = new JLabel("작성자: "+lists.get(0).getGroup_name()+" #"+lists.get(0).getGroup_writing_user_no());
+		writing_userLb.setBounds(0,55,200,26);
+		writing_userLb.setFont(st.neo_R.deriveFont((float)14));
+		writing_userLb.setForeground(st.inputGray);
+		wirtingForm.add(writing_userLb);
+		
+		JLabel writing_dayLb = new JLabel("작성일: "+lists.get(0).getGroup_writing_day());
+		writing_dayLb.setBounds(0,80,200,26);
+		writing_dayLb.setFont(st.neo_R.deriveFont((float)14));
+		writing_dayLb.setForeground(st.inputGray);
+		wirtingForm.add(writing_dayLb);
+		
+		Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,115,280,1);
+		wirtingForm.add(Line);
 		
 	}
 	
@@ -228,6 +302,8 @@ public class Group_content extends JFrame{
 		groupUserForm.setLayout(null);
 		groupUserForm.setBorder(new LineBorder(st.inputBlack,1,false));
 		settingForm.add(groupUserForm);
+		
+		createTable_friend();
         
         btnDeleteGroup = new JButton("그룹 삭제");
         btnDeleteGroup.setBounds(200, 550,80,30);
@@ -241,6 +317,49 @@ public class Group_content extends JFrame{
 		
 	}
 	
+	private void createTable_writing_list() {
+
+		
+		lists = gJoinDao.getWritingList(groupInfo.getGroup_no());
+		Object[] columnNames = {"글번호","글제목","작성자"};
+		rowData = new Object[lists.size()][3];
+		writingData(); 
+
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.addMouseListener(new MouseHandler2());
+		table.setTableHeader(null); // 테이블 헤더 지우기
+
+		scrollPane = new JScrollPane(table);
+		scrollPane.getViewport().setBackground(st.inputWhite);
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setBounds(0, 1, 409,438);
+		groupWritingForm.add(scrollPane);
+
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+
+		table.getColumn("글번호").setPreferredWidth(30); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("글제목").setPreferredWidth(299);
+		table.getColumn("작성자").setPreferredWidth(80);
+
+	}
+	
+	private void writingData() {
+
+		int j=0;
+		for(int i=0;i<lists.size();i++) {
+			rowData[i][j++] = lists.get(i).getGroup_writing_no()+".";
+			rowData[i][j++] = lists.get(i).getGroup_writing_title();
+			rowData[i][j++] = lists.get(i).getGroup_name()+" #"+lists.get(i).getGroup_writing_user_no();
+			j = 0;
+		}
+		
+	}
+
+
 	private void createTable_friend() {
 
 		lists = gJoinDao.getGroupUserList(groupInfo.getGroup_no(),userInfo.getNo());
@@ -257,15 +376,14 @@ public class Group_content extends JFrame{
 		scrollPane = new JScrollPane(table);
 		scrollPane.getViewport().setBackground(st.inputWhite);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		scrollPane.setBounds(1, 1, 298,358);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(1, 1, 278,358);
 		groupUserForm.add(scrollPane);
 
 		// 테이블 상세 설정 //
 		tableStyle(table); // 기본 테이블 스타일 설정
 		table.setSelectionForeground(st.inputBlack);
 
-		table.getColumn("이름").setPreferredWidth(260); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("이름").setPreferredWidth(240); // 테이블 내 컨텐츠 행길이 조정
 		table.getColumn("추방").setPreferredWidth(40);
 
 	}
@@ -288,7 +406,7 @@ public class Group_content extends JFrame{
 		tableStyle(table); // 기본 테이블 스타일 설정
 		table.setSelectionForeground(st.inputBlack);
 
-		table.getColumn("이름").setPreferredWidth(260); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("이름").setPreferredWidth(240); // 테이블 내 컨텐츠 행길이 조정
 		table.getColumn("추방").setPreferredWidth(40);
 
 	}
@@ -351,9 +469,57 @@ public class Group_content extends JFrame{
 				mf_g.renewalContent();
 			}
 			
+			try {
+				int row = table.getSelectedRow();
+				int col = table.getSelectedColumn();
+				String user = String.valueOf(table.getValueAt(row,0));
+				String tableValue = String.valueOf(table.getValueAt(row,col));
+				int userNo = Integer.parseInt(user.substring(user.indexOf("#")+1));
+				
+				if(tableValue.equals("추방")) {
+					System.out.println(userNo);
+					System.out.println(groupInfo.getGroup_no());
+					int cnt = groupUserDao.deleteGroupUser(userNo,groupInfo.getGroup_no());
+					System.out.println(cnt);
+					if(cnt != -1 && cnt != 0) {
+						createTable_friend_after();
+					}
+				}
+			} catch (ArrayIndexOutOfBoundsException e2) {
+			}catch(NullPointerException e2) {
+			}
+			
 		}
 
 	}
+	
+	// 마우스 이벤트 //
+		class MouseHandler2 extends MouseAdapter{
+
+			public void mouseClicked(MouseEvent e) {
+				
+				Object obj = e.getSource();
+				
+				if(obj == back_Icon) {
+					groupForm.setVisible(false);
+					mf_g.groupForm.setVisible(true);
+					mf_g.renewalContent();
+				}
+				
+				try {
+					int row = table.getSelectedRow();
+					String writing = String.valueOf(table.getValueAt(row,0));
+					int writingNo = Integer.parseInt(writing.substring(0,writing.indexOf(".")));
+
+					createWriting(writingNo);
+					
+				} catch (ArrayIndexOutOfBoundsException e2) {
+				}catch(NullPointerException e2) {
+				}
+				
+			}
+
+		}
 	
 	// 액션 이벤트 //
 	class ActionHandler implements ActionListener{
@@ -412,6 +578,33 @@ public class Group_content extends JFrame{
 				}
 
 			}
+			
+			// 그룹 삭제 버튼 // 
+			if(obj == btnDeleteGroup) {
+
+				JLabel paneMessage = new JLabel("정말로 ("+groupInfo.getGroup_name()+ ")그룹을 삭제하시겠습니까?");
+				paneMessage.setFont(st.neo_R.deriveFont((float)12));
+				paneMessage.setForeground(st.inputBlack);
+				int yesOrNo = JOptionPane.showConfirmDialog(null, paneMessage,"그룹 삭제",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+				if(yesOrNo == 0) {
+					int cnt = groupDao.deleteGroup(groupInfo.getGroup_no());
+					if(cnt != -1) {
+						JLabel paneMessage_delete = new JLabel("삭제 되었습니다.");
+						paneMessage_delete.setFont(st.neo_R.deriveFont((float)12));
+						paneMessage_delete.setForeground(st.inputBlack);
+						JOptionPane.showMessageDialog(null, paneMessage_delete,"그룹 삭제",JOptionPane.PLAIN_MESSAGE);
+						
+						groupForm.setVisible(false);
+						mf_g.groupForm.setVisible(true); 
+						mf_g.renewalContent();
+					}else {
+						System.out.println("삭제 실패");
+					}
+				}
+			}
+			
 		}
+		
 	}
+	
 }

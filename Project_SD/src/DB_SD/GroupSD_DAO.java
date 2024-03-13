@@ -192,4 +192,34 @@ public class GroupSD_DAO {
 		return cnt;
 	}
 	
+	public int deleteGroup(int groupNo) {
+		connect();
+		String sql = "DELETE GROUPSD "
+						+ "WHERE GROUP_NO = ?";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1,groupNo);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+	
 }

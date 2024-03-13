@@ -153,6 +153,39 @@ public class Groupsd_user_list_DAO {
 		return cnt;
 	}
 	
+	public int deleteGroupUser(int no, int groupNo) {
+		connect();
+		String sql = "DELETE GROUPSD_USER_LIST "
+						+ "WHERE  GROUP_NO = ? "
+						+ "AND USER_NO = ? "
+						+ "AND GROUP_CHECK = 'Y'";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1,groupNo);
+			ps.setInt(2,no);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+	
 	public int insertGroup(int userNo,int groupNo) {
 		connect();
 		String sql = "INSERT INTO GROUPSD_USER_LIST VALUES (?,?,'N')";

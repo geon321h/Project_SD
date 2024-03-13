@@ -99,19 +99,10 @@ public class MainFrame extends JFrame {
 		menuForm.setLocation(0, 0);
 		display.add(menuForm);
 		// 로고 //
-		logo = new JLabel("<html><body style='text-align:left;'>Shared<br />Diary</body></html>");
-		logo.setBounds(95, 57,150,50);
-		logo.setFont(st.neo_EB.deriveFont((float)16));
-		logo.setForeground(Color.lightGray);
-		menuForm.add(logo);
-		
 		Icon = new JLabel(" ", JLabel.LEFT); 
-		ImageIcon logo_icon = new ImageIcon("Project_SD/image/icon/diary_icon.png");
-		img = logo_icon.getImage();
-    	updateImg = img.getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-        updateIcon = new ImageIcon(updateImg);
-        Icon.setIcon(updateIcon);
-        Icon.setBounds(40, 50,64,64);
+		ImageIcon logo_icon = new ImageIcon("Project_SD/image/icon/logo_gray.png");
+        Icon.setIcon(logo_icon);
+        Icon.setBounds(35, 40,160,64);
 		menuForm.add(Icon);
 		
 		line = new JPanel();

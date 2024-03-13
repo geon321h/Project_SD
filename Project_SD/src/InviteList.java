@@ -322,7 +322,6 @@ public class InviteList extends JFrame{
 					}
 				}else if(tableValue.equals("초대")) {
 					int cnt = groupUserDao.insertGroup(groupNo,no);
-					System.out.println(1);
 					if(cnt != -1 && cnt != 0) {
 						createTable2_after();
 					}

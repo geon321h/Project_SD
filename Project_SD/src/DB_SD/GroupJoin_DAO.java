@@ -59,6 +59,7 @@ public class GroupJoin_DAO {
 						+ "              WHERE USER_NO = ? "
 						+ "			   AND GROUP_CHECK = 'Y') T22 "
 						+ "       WHERE T21.GROUP_NO = T22.GROUP_NO "
+						+ "		 AND T21.GROUP_CHECK = 'Y' "
 						+ "       GROUP BY T22.GROUP_NO) T20 "
 						+ "WHERE T10.GROUP_NO = T20.GROUP_NO "
 						+ "ORDER BY T10.GROUP_NO";
@@ -116,6 +117,7 @@ public class GroupJoin_DAO {
 						+ "              WHERE USER_NO = ? "
 						+ "			   AND GROUP_CHECK = 'Y') T22 "
 						+ "       WHERE T21.GROUP_NO = T22.GROUP_NO "
+						+ "		 AND T21.GROUP_CHECK = 'Y' "
 						+ "       GROUP BY T22.GROUP_NO) T20 "
 						+ "WHERE T10.GROUP_NO = T20.GROUP_NO and T10.GROUP_MANAGER_NO = ? "
 						+ "ORDER BY T10.GROUP_NO";
@@ -266,12 +268,13 @@ public class GroupJoin_DAO {
 	public ArrayList<GroupJoin_DTO> getGroupUserList(int GroupNo, int no) {
 		connect();
 		String sql = "SELECT NAME,USER_NO "
-						+ "FROM  (SELECT USER_NO "
+						+ "FROM  (SELECT USER_NO,GROUP_CHECK "
 						+ "       FROM GROUPSD_USER_LIST "
 						+ "       WHERE GROUP_NO = ?) T10 "
 						+ "       , USERSD T20 "
 						+ "WHERE T20.NO = T10.USER_NO "
-						+ "      AND NOT USER_NO = ?";
+						+ "      AND NOT USER_NO = ? "
+						+ "      AND T10.GROUP_CHECK = 'Y'";
 		
 		lists = new ArrayList<>();
 		
@@ -310,6 +313,127 @@ public class GroupJoin_DAO {
 			}			
 		}
 		return lists;
+	}
+	
+	public ArrayList<GroupJoin_DTO> getWritingList(int GroupNo) {
+		connect();
+		String sql = "SELECT GROUP_NO,GROUP_WRITING_NO,GROUP_WRITING_TITLE,GROUP_WRITING_CONTENT,GROUP_WRITING_DAY,GROUP_WRITING_USER_NO,T20.NAME "
+						+ "FROM (SELECT GROUP_NO,GROUP_WRITING_NO,GROUP_WRITING_TITLE,GROUP_WRITING_CONTENT,GROUP_WRITING_DAY,GROUP_WRITING_USER_NO "
+						+ "      FROM GROUPSD_WRITING_LIST "
+						+ "      WHERE GROUP_NO = ? "
+						+ "      ORDER BY GROUP_WRITING_NO) T10 "
+						+ "      , USERSD T20 "
+						+ "WHERE T10.GROUP_WRITING_NO = T20.NO";
+		
+		lists = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, GroupNo);
+			rs = ps.executeQuery();
+			while(rs.next()) { 
+				int group_no = rs.getInt("GROUP_NO");
+				int group_writing_no = rs.getInt("GROUP_WRITING_NO");
+				String group_writing_title = rs.getString("GROUP_WRITING_TITLE");
+				String group_writing_content = rs.getString("GROUP_WRITING_CONTENT");
+				String group_writing_day = String.valueOf(rs.getDate("GROUP_WRITING_DAY"));
+				int group_writing_user_no = rs.getInt("GROUP_WRITING_USER_NO");
+				String name = rs.getString("NAME");
+
+				Dto = new GroupJoin_DTO();
+				Dto.setGroup_no(group_no);
+				Dto.setGroup_writing_no(group_writing_no); 
+				Dto.setGroup_writing_title(group_writing_title); 
+				Dto.setGroup_writing_content(group_writing_content); 
+				Dto.setGroup_writing_day(group_writing_day); 
+				Dto.setGroup_writing_user_no(group_writing_user_no); 
+				Dto.setGroup_name(name); // 임시로 유저네임 대신 사용
+				
+				lists.add(Dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return lists;
+	}
+
+	public ArrayList<GroupJoin_DTO> getWritingInfo(int groupNo, int writingNo) {
+
+		connect();
+		String sql = "SELECT GROUP_NO,GROUP_WRITING_NO,GROUP_WRITING_TITLE,GROUP_WRITING_CONTENT,GROUP_WRITING_DAY,GROUP_WRITING_USER_NO,T20.NAME "
+						+ "FROM (SELECT GROUP_NO,GROUP_WRITING_NO,GROUP_WRITING_TITLE,GROUP_WRITING_CONTENT,GROUP_WRITING_DAY,GROUP_WRITING_USER_NO "
+						+ "      FROM GROUPSD_WRITING_LIST "
+						+ "      WHERE GROUP_NO = ? "
+						+ "      AND GROUP_WRITING_NO = ? "
+						+ "      ORDER BY GROUP_WRITING_NO) T10 "
+						+ "      , USERSD T20 "
+						+ "WHERE T10.GROUP_WRITING_NO = T20.NO";
+		
+		lists = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, groupNo);
+			ps.setInt(2, writingNo);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				int group_no = rs.getInt("GROUP_NO");
+				int group_writing_no = rs.getInt("GROUP_WRITING_NO");
+				String group_writing_title = rs.getString("GROUP_WRITING_TITLE");
+				String group_writing_content = rs.getString("GROUP_WRITING_CONTENT");
+				String group_writing_day = String.valueOf(rs.getDate("GROUP_WRITING_DAY"));
+				int group_writing_user_no = rs.getInt("GROUP_WRITING_USER_NO");
+				String name = rs.getString("NAME");
+
+				Dto = new GroupJoin_DTO();
+				Dto.setGroup_no(group_no);
+				Dto.setGroup_writing_no(group_writing_no); 
+				Dto.setGroup_writing_title(group_writing_title); 
+				Dto.setGroup_writing_content(group_writing_content); 
+				Dto.setGroup_writing_day(group_writing_day); 
+				Dto.setGroup_writing_user_no(group_writing_user_no); 
+				Dto.setGroup_name(name); // 임시로 유저네임 대신 사용
+				
+				lists.add(Dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return lists;
+		
+		
 	}
 	
 }
