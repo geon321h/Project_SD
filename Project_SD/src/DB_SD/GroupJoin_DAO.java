@@ -211,4 +211,105 @@ public class GroupJoin_DAO {
 		return lists;
 	}
 	
+	public ArrayList<GroupJoin_DTO> getInviteFriend(int GroupNo, int no) {
+		connect();
+		String sql = "SELECT T20.FRIEND_NO "
+						+ "FROM (SELECT USER_NO "
+						+ "      FROM GROUPSD_USER_LIST "
+						+ "      WHERE GROUP_NO = ? )T10 "
+						+ "      RIGHT JOIN (SELECT (CASE WHEN ? = USER_NO THEN FRIEND_NO ELSE USER_NO END) AS FRIEND_NO "
+						+ "      FROM FRIENDSD  "
+						+ "      WHERE (USER_NO = ? OR FRIEND_NO = ?) "
+						+ "      AND FRIEND_CHECK = 'Y') T20 "
+						+ "      ON T10.USER_NO = T20.FRIEND_NO "
+						+ "WHERE T10.USER_NO IS NULL";
+		
+		lists = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, GroupNo);
+			ps.setInt(2, no);
+			ps.setInt(3, no);
+			ps.setInt(4, no);
+			rs = ps.executeQuery();
+			while(rs.next()) { 
+				int friend_no = rs.getInt("FRIEND_NO");
+
+				Dto = new GroupJoin_DTO();
+				Dto.setGroup_no(friend_no);
+				
+				lists.add(Dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return lists;
+	}
+	
+	public ArrayList<GroupJoin_DTO> getGroupUserList(int GroupNo, int no) {
+		connect();
+		String sql = "SELECT NAME,USER_NO "
+						+ "FROM  (SELECT USER_NO "
+						+ "       FROM GROUPSD_USER_LIST "
+						+ "       WHERE GROUP_NO = ?) T10 "
+						+ "       , USERSD T20 "
+						+ "WHERE T20.NO = T10.USER_NO "
+						+ "      AND NOT USER_NO = ?";
+		
+		lists = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, GroupNo);
+			ps.setInt(2, no);
+			rs = ps.executeQuery();
+			while(rs.next()) { 
+				String name = rs.getString("NAME");
+				int user_no = rs.getInt("USER_NO");
+
+				Dto = new GroupJoin_DTO();
+				Dto.setGroup_no(user_no); // 임시로 사용
+				Dto.setGroup_name(name); // 임시로 사용
+				
+				lists.add(Dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return lists;
+	}
+	
 }

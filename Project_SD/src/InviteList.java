@@ -29,16 +29,20 @@ public class InviteList extends JFrame{
 	Sign_UpFrame sf = null;
 	DefaultTableModel model;
 	GroupJoin_DAO gJoinDao = new GroupJoin_DAO();
+	UserSD_DAO userDao = new UserSD_DAO();
 	Groupsd_user_list_DAO groupUserDao = new Groupsd_user_list_DAO();
 	MainFrame_group mainFrame_group;
 	ArrayList<GroupJoin_DTO> lists;
+	ArrayList<UserSD_DTO> userLists;
+	int userNo = 0;
 	private int no;
 	
 	public InviteList(String title, int no, MainFrame_group mainFrame_group) {
 		super(title);
 		this.no = no;
 		this.mainFrame_group = mainFrame_group;
-		compose(); // 화면 구성
+		userNo =  mainFrame_group.userInfo.getNo();
+		compose(title); // 화면 구성
 		setEvent();
 		
 		setSize(400,600);
@@ -52,7 +56,7 @@ public class InviteList extends JFrame{
 		
 	}
 
-	private void compose() {
+	private void compose(String titleInput) {
 
 		JPanel display = new JPanel();
 		display.setBackground(Color.white);
@@ -60,11 +64,6 @@ public class InviteList extends JFrame{
 		this.add(display);
 		
 		// title //
-		title = new JLabel("받은 초대 목록");
-		title.setBounds(120, 40,150,50);
-		title.setFont(st.neo_EB.deriveFont((float)24));
-		title.setForeground(st.inputBlack);
-		display.add(title);
 		
 		listForm = new JPanel();
 		listForm.setBackground(Color.white);
@@ -72,7 +71,26 @@ public class InviteList extends JFrame{
 		listForm.setLayout(null);
 		display.add(listForm);
 		
-		createTable();
+		if(titleInput.equals("받은 초대 목록")) {
+
+			title = new JLabel(titleInput);
+			title.setBounds(120, 40,150,50);
+			title.setFont(st.neo_EB.deriveFont((float)24));
+			title.setForeground(st.inputBlack);
+			display.add(title);
+			createTable();
+			
+		}else if(titleInput.equals("초대 하기")) {
+			
+			title = new JLabel(titleInput);
+			title.setBounds(140, 40,150,50);
+			title.setFont(st.neo_EB.deriveFont((float)24));
+			title.setForeground(st.inputBlack);
+			display.add(title);
+			createTable2();
+			
+		}
+		
 		
 	}
 	
@@ -81,7 +99,7 @@ public class InviteList extends JFrame{
 		lists = gJoinDao.getInviteGroup(no);
 		Object[] columnNames = {"이름","수락"," ","거절"};
 		rowData = new Object[lists.size()][4];
-		freindData(); 
+		groupData(); 
 
 		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
 		model = tableProtect(rowData,columnNames);
@@ -122,7 +140,7 @@ public class InviteList extends JFrame{
 		lists = gJoinDao.getInviteGroup(no);
 		Object[] columnNames = {"이름","수락"," ","거절"};
 		rowData = new Object[lists.size()][4];
-		freindData(); 
+		groupData(); 
 
 		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
 		model = tableProtect(rowData,columnNames);
@@ -142,7 +160,77 @@ public class InviteList extends JFrame{
 
 	}
 	
-	private void freindData() {
+	private void createTable2() {
+
+		lists = gJoinDao.getInviteFriend(no,userNo);
+		userLists = new ArrayList<>();
+		for(int i=0;i<lists.size();i++) {
+			userLists.add(userDao.getUserById(lists.get(i).getGroup_no()));
+		}
+		Object[] columnNames = {"이름","초대"};
+		rowData = new Object[lists.size()][2];
+		freindData(); 
+
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.addMouseListener(new MouseHandler());
+		table.setTableHeader(null); // 테이블 헤더 지우기
+
+		JPanel Line = new JPanel();
+		Line.setBounds(0, 0,300,1);
+		Line.setBackground(st.inputBlack);
+		listForm.add(Line);
+		
+		Line = new JPanel();
+		Line.setBounds(0, 380,300,1);
+		Line.setBackground(st.inputBlack);
+		listForm.add(Line);
+		
+		scrollPane = new JScrollPane(table);
+		scrollPane.getViewport().setBackground(st.inputWhite);
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setBounds(0, 11, 320,358);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listForm.add(scrollPane);
+
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+
+		table.getColumn("이름").setPreferredWidth(260); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("초대").setPreferredWidth(40);
+	}
+
+	private void createTable2_after() {
+
+		lists = gJoinDao.getInviteFriend(no,userNo);
+		Object[] columnNames = {"이름","초대"};
+		rowData = new Object[lists.size()][2];
+		
+		userLists = new ArrayList<>();
+		for(int i=0;i<lists.size();i++) {
+			userLists.add(userDao.getUserById(lists.get(i).getGroup_no()));
+		}
+		freindData(); 
+
+		// 테이블 기본값 설정(여기서 해야함) 및 스크롤에 올리기 //
+		model = tableProtect(rowData,columnNames);
+		table = new JTable(model);
+		table.setTableHeader(null); // 테이블 헤더 지우기
+		table.addMouseListener(new MouseHandler());
+		scrollPane.setViewportView(table);
+
+		// 테이블 상세 설정 //
+		tableStyle(table); // 기본 테이블 스타일 설정
+		table.setSelectionForeground(st.inputBlack);
+
+		table.getColumn("이름").setPreferredWidth(260); // 테이블 내 컨텐츠 행길이 조정
+		table.getColumn("초대").setPreferredWidth(40);
+
+	}
+	
+	private void groupData() {
 
 		int j=0;
 		for(int i=0;i<lists.size();i++) {
@@ -150,6 +238,17 @@ public class InviteList extends JFrame{
 			rowData[i][j++] = "수락";
 			rowData[i][j++] = " ";
 			rowData[i][j++] = "거절";
+			j = 0;
+		}
+		
+	}
+	
+	private void freindData() {
+
+		int j=0;
+		for(int i=0;i<lists.size();i++) {
+			rowData[i][j++] = userLists.get(i).getName()+" #"+userLists.get(i).getNo();
+			rowData[i][j++] = "초대";
 			j = 0;
 		}
 		
@@ -221,7 +320,14 @@ public class InviteList extends JFrame{
 					if(cnt != -1 && cnt != 0) {
 						createTable_after();
 					}
+				}else if(tableValue.equals("초대")) {
+					int cnt = groupUserDao.insertGroup(groupNo,no);
+					System.out.println(1);
+					if(cnt != -1 && cnt != 0) {
+						createTable2_after();
+					}
 				}
+				
 			} catch (ArrayIndexOutOfBoundsException e2) {
 			}
 		}

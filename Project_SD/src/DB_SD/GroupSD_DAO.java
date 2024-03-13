@@ -84,4 +84,112 @@ public class GroupSD_DAO {
 		return cnt;
 	}
 	
+	public GroupSD_DTO getGroupByNo(int groupNo) {
+		connect();
+		String sql = "SELECT * FROM GROUPSD WHERE GROUP_NO =?";
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, groupNo);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				int group_no = rs.getInt("group_no");
+				String group_name  = rs.getString("group_name");
+				int group_manager_no  = rs.getInt("group_manager_no");
+				String group_create_day = String.valueOf(rs.getDate("group_create_day"));
+
+				Dto = new GroupSD_DTO();
+				Dto.setGroup_no(group_no);
+				Dto.setGroup_name(group_name);
+				Dto.setGroup_manager_no(group_manager_no);
+				Dto.setGroup_create_day(group_create_day);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return Dto;
+	}
+	
+	public int checkManager(int no,int groupNo) {
+		connect();
+		String sql = "SELECT * FROM GROUPSD WHERE GROUP_MANAGER_NO = ? AND GROUP_NO = ?";
+		int cnt = -1;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			ps.setInt(2, groupNo);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				cnt=1;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+	
+	public int updateGroupName(String groupName, int groupNo) {
+		connect();
+		String sql = "UPDATE GROUPSD "
+						+ "SET GROUP_NAME = ? "
+						+"WHERE GROUP_NO = ?";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,groupName);
+			ps.setInt(2,groupNo);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+	
 }

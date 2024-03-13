@@ -20,7 +20,7 @@ public class MainFrame_group {
 
 	// content area //
 	JPanel contentForm;
-	private JPanel groupForm;
+	JPanel groupForm;
 	private JPanel display;
 	// header //
 	private JLabel groupTitle;
@@ -44,6 +44,8 @@ public class MainFrame_group {
     GroupJoin_DAO gJoinDao = new GroupJoin_DAO();
     Groupsd_user_list_DAO groupUserDao = new Groupsd_user_list_DAO();
     MainFrame mainFrame = null;
+    
+    MainFrame_group mf_g = this;
 	
 	public MainFrame_group() {
 
@@ -228,6 +230,7 @@ public class MainFrame_group {
 				
 				if(FormList.get(i).equals(obj)) {
 					groupForm.setVisible(false);
+					Group_content gc = new Group_content(mf_g,userInfo,groupNo.get(i));
 				}
 				
 			}
@@ -290,7 +293,7 @@ public class MainFrame_group {
 					}else {
 						cnt = groupDao.insertGroup(userInfo.getNo(),groupName);
 						if(cnt > 0) {
-							JLabel paneMessage_guide = new JLabel("그룹 "+groupName+" 이/가 생성되었습니다.");
+							JLabel paneMessage_guide = new JLabel("그룹 "+groupName+" (이)/가 생성되었습니다.");
 							paneMessage_guide.setFont(st.neo_R.deriveFont((float)14));
 							paneMessage_guide.setForeground(st.inputBlack);
 							JOptionPane.showMessageDialog(null, paneMessage_guide,"그룹 생성",JOptionPane.PLAIN_MESSAGE);
@@ -304,7 +307,7 @@ public class MainFrame_group {
 					paneMessage_guide.setFont(st.neo_R.deriveFont((float)14));
 					paneMessage_guide.setForeground(st.inputBlack);
 					JOptionPane.showMessageDialog(null, paneMessage_guide,"그룹 생성",JOptionPane.PLAIN_MESSAGE);
-			}
+				}	
 			} catch (NullPointerException e) {
 				System.out.println("그룹명을 입력하지 않음");
 			}
