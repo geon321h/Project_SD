@@ -323,7 +323,7 @@ public class GroupJoin_DAO {
 						+ "      WHERE GROUP_NO = ? "
 						+ "      ORDER BY GROUP_WRITING_NO) T10 "
 						+ "      , USERSD T20 "
-						+ "WHERE T10.GROUP_WRITING_NO = T20.NO";
+						+ "WHERE T10.GROUP_WRITING_USER_NO = T20.NO";
 		
 		lists = new ArrayList<>();
 		
@@ -383,7 +383,7 @@ public class GroupJoin_DAO {
 						+ "      AND GROUP_WRITING_NO = ? "
 						+ "      ORDER BY GROUP_WRITING_NO) T10 "
 						+ "      , USERSD T20 "
-						+ "WHERE T10.GROUP_WRITING_NO = T20.NO";
+						+ "WHERE T10.GROUP_WRITING_USER_NO = T20.NO";
 		
 		lists = new ArrayList<>();
 		
@@ -434,6 +434,155 @@ public class GroupJoin_DAO {
 		return lists;
 		
 		
+	}
+
+	public int checkAuthority(int no, int group_no, int group_writing_no) {
+
+		connect();
+		String sql = "SELECT COUNT(*) AS CNT "
+						+ "FROM GROUPSD T10 "
+						+ "     , GROUPSD_WRITING_LIST T20 "
+						+ "WHERE T10.GROUP_NO = T20.GROUP_NO "
+						+ "AND T10.GROUP_NO = ? "
+						+ "AND T20.GROUP_WRITING_NO = ? "
+						+ "AND (T10.GROUP_MANAGER_NO = ? OR T20.GROUP_WRITING_USER_NO = ?)";
+		
+		int cnt = 0;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, group_no);
+			ps.setInt(2, group_writing_no);
+			ps.setInt(3, no);
+			ps.setInt(4, no);
+			rs = ps.executeQuery();
+			if(rs.next()) { 
+				cnt = rs.getInt("cnt");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(rs != null){
+					rs.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+		
+	}
+	
+	public int updateWriting(int wirtingNo, int groupNo,String title,String content) {
+		connect();
+		String sql = "UPDATE GROUPSD_WRITING_LIST "
+						+ "SET GROUP_WRITING_TITLE = ? "
+						+ "    ,GROUP_WRITING_CONTENT = ? "
+						+ "WHERE GROUP_NO = ? "
+						+ "    AND GROUP_WRITING_NO = ?";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,title);
+			ps.setString(2,content);
+			ps.setInt(3,groupNo);
+			ps.setInt(4,wirtingNo);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+
+	public int deleteWriting(int group_writing_no, int group_no) {
+		connect();
+		String sql = "DELETE GROUPSD_WRITING_LIST "
+						+ "WHERE GROUP_WRITING_NO = ? "
+						+ "AND GROUP_NO = ? ";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1,group_writing_no);
+			ps.setInt(2,group_no);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
+	}
+
+	public int InsertWriting(int group_no, String title, String content, int no) {
+		connect();
+		String sql = "INSERT INTO GROUPSD_WRITING_LIST "
+						+ "VALUES (?,(SELECT NVL(MAX(GROUP_WRITING_NO),0)+1 FROM GROUPSD_WRITING_LIST) "
+							+ " ,?,?,SYSDATE,?)";
+		int cnt = -1;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, group_no);
+			ps.setString(2, title);
+			ps.setString(3, content);
+			ps.setInt(4, no);
+
+			cnt = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				// 5.사용한 자원 반납
+				if(ps != null) {
+					ps.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				System.out.println("접속 종료");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		return cnt;
 	}
 	
 }

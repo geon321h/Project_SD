@@ -195,7 +195,7 @@ public class MainFrame_group {
 			FormList.get(i).add(groupInfoDay);
 
 			JLabel user_Icon = new JLabel(" ", JLabel.CENTER);
-			ImageIcon Icon = new ImageIcon("Project_SD/image/icon/user_count_icon.png");
+			ImageIcon Icon = new ImageIcon("image/icon/user_count_icon.png");
 			user_Icon.setIcon(Icon);
 			user_Icon.setBounds(130, 98,24,24);
 			FormList.get(i).add(user_Icon);

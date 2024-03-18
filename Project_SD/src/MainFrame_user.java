@@ -116,7 +116,7 @@ public class MainFrame_user extends JFrame {
 		contentForm.add(userSettingForm);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
-		ImageIcon user_icon = new ImageIcon("Project_SD/image/icon/userBig_icon.png");
+		ImageIcon user_icon = new ImageIcon("image/icon/userBig_icon.png");
         Icon.setIcon(user_icon);
         Icon.setBounds(60, 80,144,144);
         userSettingForm.add(Icon);

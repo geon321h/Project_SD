@@ -9,6 +9,7 @@ public class Style {
     Color mainColor = new Color(156, 93, 71);
     Color mainColor_shades = new Color(117, 70, 53);
     Color lightGray = new Color(211, 211, 211);
+    Color textAreaWhite = new Color(245, 245, 245);
     Color backgroundGray = new Color(235, 235, 235);
     Color inputWhite = new Color(255, 255, 255);
     Color inputGray = new Color(128, 128, 128);

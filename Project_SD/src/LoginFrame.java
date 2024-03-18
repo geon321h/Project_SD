@@ -94,7 +94,7 @@ public class LoginFrame extends JFrame {
 		// 로고 //
 		logo = new JLabel(" ", JLabel.CENTER);
 		logo.setBounds(70, 0,180,50);
-		ImageIcon Icon = new ImageIcon("Project_SD/image/icon/logo.png");
+		ImageIcon Icon = new ImageIcon("image/logo.png");
 		logo.setIcon(Icon);
 		LoginForm.add(logo);
 		

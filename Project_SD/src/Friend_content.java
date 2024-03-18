@@ -75,7 +75,7 @@ public class Friend_content {
 			friendContentForm.add(searchUserForm);
 
 			JLabel search_Icon = new JLabel(" ", JLabel.CENTER);
-			ImageIcon Icon = new ImageIcon("Project_SD/image/icon/search_icon.png");
+			ImageIcon Icon = new ImageIcon("image/icon/search_icon.png");
 			search_Icon.setIcon(Icon);
 			search_Icon.setBounds(13, 11,34,34);
 			searchUserForm.add(search_Icon);
@@ -97,8 +97,8 @@ public class Friend_content {
 		}else if(menu.equals(mainFrame_friend.getMenu(4))) {
 			// 테이블 짜기 //
 			createTableFrom();
-
 		}
+		
 	}
 
 	private void createTableAdd(String searchName) {
@@ -402,7 +402,7 @@ public class Friend_content {
 	private void freindData(int num) {
 
 		if(num == 1) {
-			ImageIcon Icon = new ImageIcon("Project_SD/image/icon/delete_user_icon.png");
+			ImageIcon Icon = new ImageIcon("image/icon/delete_user_icon.png");
 			int j=0;
 			for(int i=0;i<lists.size();i++) {
 				rowData[i][j++] = lists.get(i).getName()+" #"+lists.get(i).getNo();
@@ -453,7 +453,7 @@ public class Friend_content {
 				friend = String.valueOf(table.getValueAt(row,0));
 				tableValue = String.valueOf(table.getValueAt(row,col));
 
-				String icon = "Project_SD/image/icon/delete_user_icon.png";
+				String icon = "image/icon/delete_user_icon.png";
 				int friendNo = Integer.parseInt(friend.substring(friend.indexOf("#")+1));
 				friend = friend.substring(0,friend.indexOf(" "));
 

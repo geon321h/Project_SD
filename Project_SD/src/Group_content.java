@@ -1,6 +1,10 @@
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -50,6 +55,12 @@ public class Group_content extends JFrame{
 	private JPanel groupUserForm;
 	private JPanel wirtingForm;
 	private JTextField wirtingTitle;
+	private JTextArea wirtingContent;
+	private JLabel wirtingLength ;
+	private JButton btnUpdateWriting;
+	private JButton btnDeleteWriting;
+	private JButton btnInsertWriting;
+	private JButton btnInsert;
 	// 참조 클래스 //
     Style st = new Style();
     UserSD_DTO userInfo = new UserSD_DTO();
@@ -60,6 +71,8 @@ public class Group_content extends JFrame{
     Groupsd_user_list_DAO groupUserDao = new Groupsd_user_list_DAO();
     MainFrame_group mf_g;
     DefaultTableModel model;
+    
+    private int byteW = 0;
     
 	public Group_content() {
 
@@ -116,7 +129,7 @@ public class Group_content extends JFrame{
 		groupListForm.add(groupNo);
 
 		back_Icon = new JLabel(" ", JLabel.CENTER);
-		ImageIcon Icon = new ImageIcon("Project_SD/image/icon/back_arrow_icon.png");
+		ImageIcon Icon = new ImageIcon("image/icon/back_arrow_icon.png");
 		back_Icon.setIcon(Icon);
 		back_Icon.setBounds(470, 10,32,32);
 		groupListForm.add(back_Icon);
@@ -143,6 +156,16 @@ public class Group_content extends JFrame{
 		btnInviteList.setFocusable(false);
 		groupListForm.add(btnInviteList);
 		
+		btnInsertWriting = new JButton("글쓰기");
+		btnInsertWriting.setBounds(380,130,80,30);
+		btnInsertWriting.setFont(st.neo_B.deriveFont((float)14));
+		btnInsertWriting.setBackground(st.inputWhite);
+		btnInsertWriting.setBorder(new LineBorder(st.inputBlack,1,false));
+		btnInsertWriting.setForeground(st.inputBlack);
+		btnInsertWriting.setFocusable(false);
+		groupListForm.add(btnInsertWriting);
+		btnInsertWriting.addActionListener(new ActionHandler());
+
 		JPanel Line = new JPanel();
 		Line.setBackground(st.inputBlack);
 		Line.setBounds(50,120,409,1);
@@ -192,7 +215,7 @@ public class Group_content extends JFrame{
 		
 		wirtingForm = new JPanel();
 		wirtingForm.setBackground(st.inputWhite);
-		wirtingForm.setBounds(20,40,280,580);
+		wirtingForm.setBounds(20,40,280,590);
 		wirtingForm.setLayout(null);
 		wirtingForm.setBorder(new LineBorder(st.lightGray,0,true));
 		groupWorkspaceForm.add(wirtingForm);
@@ -227,8 +250,128 @@ public class Group_content extends JFrame{
 		Line.setBounds(0,115,280,1);
 		wirtingForm.add(Line);
 		
+		wirtingContent = new JTextArea(lists.get(0).getGroup_writing_content());
+		wirtingContent.setBounds(0, 130,280,400);
+		wirtingContent.setFont(st.neo_R.deriveFont((float)16));
+		wirtingContent.setForeground(st.inputBlack);
+		wirtingContent.setBackground(st.textAreaWhite);
+		wirtingContent.setLineWrap(true); // 자동 줄바꿈
+		wirtingContent.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		wirtingForm.add(wirtingContent);
+		wirtingContent.addKeyListener(new keyHandler());
+		
+		wirtingLength = new JLabel();
+		wirtingLength.setBounds(0,535,120,24);
+		wirtingLength.setFont(st.neo_R.deriveFont((float)12));
+		wirtingLength.setForeground(st.inputGray);
+		wirtingForm.add(wirtingLength);
+		byteShow();
+		
+		checkAuthority(lists);
+		
 	}
 	
+	private void createInsertWriting() {
+
+		if(groupWorkspaceForm != null) {
+			groupWorkspaceForm.setVisible(false);
+		}
+		groupWorkspaceForm = new JPanel();
+		groupWorkspaceForm.setBackground(st.inputWhite);
+		groupWorkspaceForm.setBounds(529,0,320,660);
+		groupWorkspaceForm.setLayout(null);
+		groupWorkspaceForm.setBorder(new LineBorder(st.lightGray,1,true));
+		groupForm.add(groupWorkspaceForm);
+		
+		wirtingForm = new JPanel();
+		wirtingForm.setBackground(st.inputWhite);
+		wirtingForm.setBounds(20,40,280,590);
+		wirtingForm.setLayout(null);
+		wirtingForm.setBorder(new LineBorder(st.lightGray,0,true));
+		groupWorkspaceForm.add(wirtingForm);
+		
+		wirtingTitle = new JTextField("제목을 입력해주세요.");
+		wirtingTitle.setBounds(0, 30,250,36);
+		wirtingTitle.setFont(st.neo_B.deriveFont((float)24));
+		wirtingTitle.setForeground(st.inputGray);
+		wirtingTitle.setBackground(st.inputWhite);
+		wirtingTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 4, 5));
+		wirtingForm.add(wirtingTitle);
+		wirtingTitle.addFocusListener(new focusHandler());
+		
+		JPanel Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,75,280,1);
+		wirtingForm.add(Line);
+
+		Line = new JPanel();
+		Line.setBackground(st.inputBlack);
+		Line.setBounds(0,115,280,1);
+		wirtingForm.add(Line);
+		
+		wirtingContent = new JTextArea("내용을 입력해주세요.");
+		wirtingContent.setBounds(0, 130,280,400);
+		wirtingContent.setFont(st.neo_R.deriveFont((float)16));
+		wirtingContent.setForeground(st.inputGray);
+		wirtingContent.setBackground(st.textAreaWhite);
+		wirtingContent.setLineWrap(true); // 자동 줄바꿈
+		wirtingContent.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		wirtingForm.add(wirtingContent);
+		wirtingContent.addKeyListener(new keyHandler());
+		wirtingContent.addFocusListener(new focusHandler());
+		
+		wirtingLength = new JLabel();
+		wirtingLength.setBounds(0,535,120,24);
+		wirtingLength.setFont(st.neo_R.deriveFont((float)12));
+		wirtingLength.setForeground(st.inputGray);
+		wirtingForm.add(wirtingLength);
+		byteShow();
+		
+		btnInsert = new JButton("글 등록");
+		btnInsert.setBounds(200,560,80,30);
+		btnInsert.setFont(st.neo_B.deriveFont((float)14));
+		btnInsert.setBackground(st.inputWhite);
+		btnInsert.setBorder(new LineBorder(st.inputBlack,1,false));
+		btnInsert.setForeground(st.inputBlack);
+		btnInsert.setFocusable(false);
+		wirtingForm.add(btnInsert);
+		btnInsert.addActionListener(new ActionHandler());
+		
+	}
+	
+	private void checkAuthority(ArrayList<GroupJoin_DTO> lists2) {
+
+		int cnt = gJoinDao.checkAuthority(userInfo.getNo(),groupInfo.getGroup_no(),lists2.get(0).getGroup_writing_no());
+		
+		if(cnt != 0 && cnt != -1) {
+			btnUpdateWriting = new JButton("게시글 수정");
+			btnUpdateWriting.setBounds(110,560,80,30);
+			btnUpdateWriting.setFont(st.neo_B.deriveFont((float)14));
+			btnUpdateWriting.setBackground(st.inputWhite);
+			btnUpdateWriting.setBorder(new LineBorder(st.inputBlack,1,false));
+			btnUpdateWriting.setForeground(st.inputBlack);
+			btnUpdateWriting.setFocusable(false);
+			wirtingForm.add(btnUpdateWriting);
+			btnUpdateWriting.addActionListener(new ActionHandler());
+	        
+			btnDeleteWriting = new JButton("게시글 삭제");
+			btnDeleteWriting.setBounds(200,560,80,30);
+			btnDeleteWriting.setFont(st.neo_B.deriveFont((float)14));
+			btnDeleteWriting.setBackground(st.mainColor);
+			btnDeleteWriting.setBorder(new LineBorder(st.mainColor,1,false));
+			btnDeleteWriting.setForeground(st.inputWhite);
+			btnDeleteWriting.setFocusable(false);
+			wirtingForm.add(btnDeleteWriting);
+			btnDeleteWriting.addActionListener(new ActionHandler());
+			
+		}else {
+			wirtingTitle.setEditable(false);
+			wirtingContent.setEditable(false);
+		}
+		
+	}
+
+
 	private void createSetting() {
 
 		if(groupWorkspaceForm != null) {
@@ -342,8 +485,8 @@ public class Group_content extends JFrame{
 		table.setSelectionForeground(st.inputBlack);
 
 		table.getColumn("글번호").setPreferredWidth(30); // 테이블 내 컨텐츠 행길이 조정
-		table.getColumn("글제목").setPreferredWidth(299);
-		table.getColumn("작성자").setPreferredWidth(80);
+		table.getColumn("글제목").setPreferredWidth(249);
+		table.getColumn("작성자").setPreferredWidth(130);
 
 	}
 	
@@ -485,8 +628,7 @@ public class Group_content extends JFrame{
 						createTable_friend_after();
 					}
 				}
-			} catch (ArrayIndexOutOfBoundsException e2) {
-			}catch(NullPointerException e2) {
+			} catch (Exception e2) {
 			}
 			
 		}
@@ -603,8 +745,150 @@ public class Group_content extends JFrame{
 				}
 			}
 			
+			// 게시글 버튼 //
+			if(obj == btnUpdateWriting) {
+				if(wirtingTitle.getText().length()<=8 && wirtingContent.getText().getBytes().length<=1000) {
+					
+					int cnt = gJoinDao.updateWriting(lists.get(0).getGroup_writing_no(),groupInfo.getGroup_no(),wirtingTitle.getText(),wirtingContent.getText());
+					if(cnt != -1) {
+						JLabel paneMessage_update = new JLabel("수정되었습니다.");
+						paneMessage_update.setFont(st.neo_R.deriveFont((float)12));
+						paneMessage_update.setForeground(st.inputBlack);
+						JOptionPane.showMessageDialog(null, paneMessage_update,"게시글 수정",JOptionPane.PLAIN_MESSAGE);
+						
+						if(groupListForm != null) {
+							groupForm.setVisible(false);
+						}
+						Group_content gc = new Group_content(mf_g,userInfo,groupInfo.getGroup_no());
+					}else {
+						System.out.println("수정 실패");
+					}
+				}else {
+					JLabel paneMessage_update = new JLabel("제목을 8글자이하 내용은 1000byte를 초과하지 않도록 입력해주세요.");
+					paneMessage_update.setFont(st.neo_R.deriveFont((float)12));
+					paneMessage_update.setForeground(st.inputBlack);
+					JOptionPane.showMessageDialog(null, paneMessage_update,"게시글 수정",JOptionPane.PLAIN_MESSAGE);
+				}
+				
+			}else if(obj == btnDeleteWriting) {
+				JLabel paneMessage = new JLabel("게시글을 삭제하시겠습니까?");
+				paneMessage.setFont(st.neo_R.deriveFont((float)12));
+				paneMessage.setForeground(st.inputBlack);
+				int yesOrNo = JOptionPane.showConfirmDialog(null, paneMessage,"게시글 삭제",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+
+				if(yesOrNo == 0) {
+					int cnt = gJoinDao.deleteWriting(lists.get(0).getGroup_writing_no(),groupInfo.getGroup_no());
+					if(cnt != -1) {
+						JLabel paneMessage_update = new JLabel("삭제되었습니다.");
+						paneMessage_update.setFont(st.neo_R.deriveFont((float)12));
+						paneMessage_update.setForeground(st.inputBlack);
+						JOptionPane.showMessageDialog(null, paneMessage_update,"게시글 삭제",JOptionPane.PLAIN_MESSAGE);
+
+						if(groupListForm != null) {
+							groupForm.setVisible(false);
+						}
+						Group_content gc = new Group_content(mf_g,userInfo,groupInfo.getGroup_no());
+					}else {
+						System.out.println("삭제 실패");
+					}
+				}
+
+			}else if(obj == btnInsertWriting) {
+				createInsertWriting();
+			}else if(obj == btnInsert) {
+				System.out.println(userInfo.getNo());
+				int cnt = gJoinDao.InsertWriting(groupInfo.getGroup_no(),wirtingTitle.getText(),wirtingContent.getText(),userInfo.getNo());
+				if(cnt != -1 && cnt != 0) {
+					JLabel paneMessage = new JLabel("등록되었습니다.");
+					paneMessage.setFont(st.neo_R.deriveFont((float)12));
+					paneMessage.setForeground(st.inputBlack);
+					JOptionPane.showMessageDialog(null, paneMessage,"게시글 등록",JOptionPane.PLAIN_MESSAGE);
+
+					if(groupListForm != null) {
+						groupForm.setVisible(false);
+					}
+					Group_content gc = new Group_content(mf_g,userInfo,groupInfo.getGroup_no());
+				}else {
+					System.out.println("등록 실패");
+				}
+			}
+			
 		}
 		
+	}
+	
+	// 키보드 이벤트 //
+	class keyHandler extends KeyAdapter{
+
+		public void keyTyped(KeyEvent e) {
+			Object obj = e.getSource();
+			if(obj == wirtingContent) {
+				if(wirtingContent.getText().getBytes().length>=1000) {
+					e.consume();
+				}
+			}
+		}
+
+		public void keyReleased(KeyEvent e){
+
+			Object obj = e.getSource();
+
+			// Input 박스 //
+			if(obj == wirtingContent) {
+
+				byteShow();
+				
+			}
+
+
+		}
+
+
+	}
+	
+	// 포커스 이벤트 //
+	class focusHandler extends FocusAdapter{
+		
+		public void focusGained(FocusEvent e) {
+			
+			Object obj = e.getSource();
+			
+			if(obj == wirtingTitle) {
+				if(wirtingTitle.getText().equals("제목을 입력해주세요.")) {
+					wirtingTitle.setText("");
+					wirtingTitle.setForeground(st.inputBlack);
+				}
+			}else if(obj == wirtingContent){
+				if(wirtingContent.getText().equals("내용을 입력해주세요.")) {
+					wirtingContent.setText("");
+					wirtingContent.setForeground(st.inputBlack);
+				}
+			}
+				
+		}
+		
+		public void focusLost(FocusEvent e) {
+			
+			Object obj = e.getSource();
+			
+			if(obj == wirtingTitle) {
+				if(wirtingTitle.getText().equals("")) {
+					wirtingTitle.setText("제목을 입력해주세요.");
+					wirtingTitle.setForeground(st.inputGray);
+				}
+			}else if(obj == wirtingContent){
+				if(wirtingContent.getText().equals("")) {
+					wirtingContent.setText("내용을 입력해주세요.");
+					wirtingContent.setForeground(st.inputGray);
+				}
+			}
+			
+		}
+		
+	}
+	private void byteShow() {
+		byteW = wirtingContent.getText().getBytes().length;
+		wirtingLength.setText(byteW+"/1000 byte");		
 	}
 	
 }

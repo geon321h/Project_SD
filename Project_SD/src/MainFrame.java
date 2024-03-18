@@ -100,7 +100,7 @@ public class MainFrame extends JFrame {
 		display.add(menuForm);
 		// 로고 //
 		Icon = new JLabel(" ", JLabel.LEFT); 
-		ImageIcon logo_icon = new ImageIcon("Project_SD/image/icon/logo_gray.png");
+		ImageIcon logo_icon = new ImageIcon("image/logo_gray.png");
         Icon.setIcon(logo_icon);
         Icon.setBounds(35, 40,160,64);
 		menuForm.add(Icon);
@@ -112,7 +112,7 @@ public class MainFrame extends JFrame {
 		
 		// 프로필 //
 		Icon = new JLabel(" ", JLabel.LEFT); 
-		ImageIcon user_icon = new ImageIcon("Project_SD/image/icon/user_icon.png");
+		ImageIcon user_icon = new ImageIcon("image/icon/user_icon.png");
 		img = user_icon.getImage();
     	updateImg = img.getScaledInstance(48, 48, Image.SCALE_SMOOTH);
         updateIcon = new ImageIcon(updateImg);
@@ -156,7 +156,7 @@ public class MainFrame extends JFrame {
 		menuForm.add(groupMenu);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
-		ImageIcon group_icon = new ImageIcon("Project_SD/image/icon/group_icon.png");
+		ImageIcon group_icon = new ImageIcon("image/icon/group_icon.png");
         img = group_icon.getImage();
     	updateImg = img.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         updateIcon = new ImageIcon(updateImg);
@@ -176,7 +176,7 @@ public class MainFrame extends JFrame {
 		menuForm.add(friendMenu);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
-		ImageIcon friend_icon = new ImageIcon("Project_SD/image/icon/friend_icon.png");
+		ImageIcon friend_icon = new ImageIcon("image/icon/friend_icon.png");
         img = friend_icon.getImage();
     	updateImg = img.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         updateIcon = new ImageIcon(updateImg);
@@ -196,7 +196,7 @@ public class MainFrame extends JFrame {
 		menuForm.add(settingMenu);
 		
 		Icon = new JLabel(" ", JLabel.CENTER); 
-		ImageIcon calendar_icon = new ImageIcon("Project_SD/image/icon/settings_icon.png");
+		ImageIcon calendar_icon = new ImageIcon("image/icon/settings_icon.png");
         img = calendar_icon.getImage();
     	updateImg = img.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         updateIcon = new ImageIcon(updateImg);
@@ -336,8 +336,8 @@ public class MainFrame extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		//LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
-		new MainFrame("Shared Diary",1);
+		
+		LoginFrame rf = new LoginFrame("Shared Diary : Login"); // 프로그램 실행시 로그인 화면 출력
 		
 	}
 
